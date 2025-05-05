@@ -55,3 +55,19 @@ for billboard in range(BILLBOARD_CNT):
 pd.DataFrame(slots, columns=["billboard", "start", "stop"]).rename_axis(
     index="id"
 ).to_csv("slots.csv")
+
+# tag database
+
+# influence table
+# tag x slot x user = influence
+# 0 if slot timestamp does not agree with user timestamp
+tag_cnt = 20
+influences = []
+for tag in range(tag_cnt):
+    for slot in range(len(slots)):
+        for user in range(len(population)):
+            influence = random.random()
+            influences.append([format(influence, ".4f"), tag, slot, user])
+pd.DataFrame(influences, columns=["influence", "tag", "slot", "user"]).rename_axis(
+    index="id"
+).to_csv("influence.csv")

@@ -66,17 +66,17 @@ pd.DataFrame(slots, columns=["billboard", "start", "stop"]).rename_axis(
 # tag x slot x user = influence
 # 0 if slot timestamp does not agree with user timestamp
 tag_cnt = random.randint(10, MAX_TAG_CNT)
-influences = []
+influences_table = []
 for tag in range(tag_cnt):
     for slot in range(len(slots)):
+        total_influence = 0
         for user in range(len(population)):
             if max(population[user][1], slots[slot][1]) < min(
                 population[user][2], slots[slot][2]
             ):
                 influence = random.random()
-                influences.append([format(influence, ".4f"), tag, slot, user])
-            else:
-                influences.append([0, tag, slot, user])
-pd.DataFrame(influences, columns=["influence", "tag", "slot", "user"]).rename_axis(
+                total_influence += influence
+        influences_table.append([format(total_influence, ".4f"), tag, slot])
+pd.DataFrame(influences_table, columns=["influence", "tag", "slot"]).rename_axis(
     index="id"
-).to_csv("influence.csv")
+).to_csv("influence_table.csv")

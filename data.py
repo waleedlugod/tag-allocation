@@ -4,12 +4,16 @@ import pandas as pd
 
 LOCATION_CNT = 10
 
-DATABASE_CNT = 10
+BILLBOARD_CNT = 10
 LOCATION_LEN = 5
 MAX_COST = 50
 
 POPULATION_CNT = 10
-MAX_TIMESTAMP = 100
+MAX_TIMESTAMP = 200
+
+MAX_SLOT_CNT = 20
+MAX_INITIAL_SLOT_TIME = 10
+MAX_SLOT_DURATION = 30
 
 
 locations = []
@@ -17,17 +21,6 @@ for i in range(LOCATION_CNT):
     locations.append(
         "".join(random.choices(string.ascii_uppercase + string.digits, k=LOCATION_LEN))
     )
-
-
-# billboard database
-billboards = []
-for i in range(DATABASE_CNT):
-    location = random.choice(locations)
-    cost = random.randint(1, MAX_COST)
-    billboards.append([location, cost])
-pd.DataFrame(billboards, columns=["location", "cost"]).rename_axis(index="id").to_csv(
-    "billboards.csv"
-)
 
 # population database
 population = []
@@ -39,3 +32,26 @@ for i in range(POPULATION_CNT):
 pd.DataFrame(
     population, columns=["location", "timestamp_start", "timestamp_stop"]
 ).rename_axis(index="id").to_csv("population.csv")
+
+# billboard database
+billboards = []
+for i in range(BILLBOARD_CNT):
+    location = random.choice(locations)
+    cost = random.randint(1, MAX_COST)
+    billboards.append([location, cost])
+pd.DataFrame(billboards, columns=["location", "cost"]).rename_axis(index="id").to_csv(
+    "billboards.csv"
+)
+
+# slots database
+slots = []
+for billboard in range(BILLBOARD_CNT):
+    slot_cnt = random.randint(1, MAX_SLOT_CNT)
+    initial = random.randint(0, MAX_INITIAL_SLOT_TIME)
+    duration = random.randint(1, MAX_SLOT_DURATION)
+    for slot in range(slot_cnt):
+        slots.append([billboard, initial, initial + duration])
+        initial += duration + 1
+pd.DataFrame(slots, columns=["billboard", "start", "stop"]).rename_axis(
+    index="id"
+).to_csv("slots.csv")

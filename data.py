@@ -2,36 +2,40 @@ import random
 import string
 import pandas as pd
 
-LOCATION_CNT = 10
+MAX_LOCATION_CNT = 5
 
-BILLBOARD_CNT = 10
+BILLBOARD_CNT = 5
 LOCATION_LEN = 5
-MAX_COST = 50
+MAX_COST = 20
 
-POPULATION_CNT = 10
-MAX_TIMESTAMP = 200
+MAX_POPULATION_CNT = 10
+MAX_TIMESTAMP = 20
 
-MAX_SLOT_CNT = 20
-MAX_INITIAL_SLOT_TIME = 10
-MAX_SLOT_DURATION = 30
+MAX_SLOT_CNT = 10
+MAX_INITIAL_SLOT_TIME = 5
+MAX_SLOT_DURATION = 15
+
+MAX_TAG_CNT = 30
 
 
+location_cnt = random.randint(1, MAX_LOCATION_CNT)
 locations = []
-for i in range(LOCATION_CNT):
+for i in range(location_cnt):
     locations.append(
         "".join(random.choices(string.ascii_uppercase + string.digits, k=LOCATION_LEN))
     )
 
 # population database
+population_cnt = random.randint(1, MAX_POPULATION_CNT)
 population = []
-for i in range(POPULATION_CNT):
+for i in range(population_cnt):
     location = random.choice(locations)
     timestamp_start = random.randint(0, MAX_TIMESTAMP - 1)
     timestamp_stop = random.randint(timestamp_start, MAX_TIMESTAMP)
     population.append([location, timestamp_start, timestamp_stop])
-pd.DataFrame(
-    population, columns=["location", "timestamp_start", "timestamp_stop"]
-).rename_axis(index="id").to_csv("population.csv")
+pd.DataFrame(population, columns=["location", "start", "stop"]).rename_axis(
+    index="id"
+).to_csv("population.csv")
 
 # billboard database
 billboards = []
@@ -61,13 +65,18 @@ pd.DataFrame(slots, columns=["billboard", "start", "stop"]).rename_axis(
 # influence table
 # tag x slot x user = influence
 # 0 if slot timestamp does not agree with user timestamp
-tag_cnt = 20
+tag_cnt = random.randint(10, MAX_TAG_CNT)
 influences = []
 for tag in range(tag_cnt):
     for slot in range(len(slots)):
         for user in range(len(population)):
-            influence = random.random()
-            influences.append([format(influence, ".4f"), tag, slot, user])
+            if max(population[user][1], slots[slot][1]) < min(
+                population[user][2], slots[slot][2]
+            ):
+                influence = random.random()
+                influences.append([format(influence, ".4f"), tag, slot, user])
+            else:
+                influences.append([0, tag, slot, user])
 pd.DataFrame(influences, columns=["influence", "tag", "slot", "user"]).rename_axis(
     index="id"
 ).to_csv("influence.csv")

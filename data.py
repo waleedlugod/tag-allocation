@@ -16,7 +16,7 @@ MAX_SLOT_CNT = 10
 MAX_INITIAL_SLOT_TIME = 5
 MAX_SLOT_DURATION = 15
 
-MAX_TAG_CNT = 30
+MAX_TAG_CNT = 15
 
 
 location_cnt = random.randint(1, MAX_LOCATION_CNT)
@@ -83,4 +83,4 @@ pd.DataFrame(influences_table, columns=["influence", "tag", "slot"]).rename_axis
 with open("tags.csv", "w") as tagsfile:
     tagswriter = csv.writer(tagsfile)
     tagswriter.writerow(["tag count"])
-    tagswriter.writerow([MAX_TAG_CNT])
+    tagswriter.writerow([tag_cnt])

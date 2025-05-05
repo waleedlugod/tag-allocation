@@ -60,10 +60,7 @@ pd.DataFrame(slots, columns=["billboard", "start", "stop"]).rename_axis(
     index="id"
 ).to_csv("slots.csv")
 
-# tag database
-
 # influence table
-# tag x slot x user = influence
 # 0 if slot timestamp does not agree with user timestamp
 tag_cnt = random.randint(10, MAX_TAG_CNT)
 influences_table = []

@@ -1,6 +1,7 @@
 import random
 import string
 import pandas as pd
+import csv
 
 MAX_LOCATION_CNT = 5
 
@@ -77,3 +78,9 @@ for tag in range(tag_cnt):
 pd.DataFrame(influences_table, columns=["influence", "tag", "slot"]).rename_axis(
     index="id"
 ).to_csv("influence_table.csv")
+
+# tag database
+with open("tags.csv", "w") as tagsfile:
+    tagswriter = csv.writer(tagsfile)
+    tagswriter.writerow(["tag count"])
+    tagswriter.writerow([MAX_TAG_CNT])

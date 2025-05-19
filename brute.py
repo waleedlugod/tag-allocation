@@ -57,13 +57,12 @@ for i in range(1 << tags_cnt):
         # slots_comb.sort()
         slots_perms = list(permutations(slots_comb))
 
-        curr_allocation = [-1 for _ in range(len(slots))]
-
         # For each tag permutation to slot permutation
         # First, check if valid allocation
         # If valid allocation, get influence
         for tag_perm in tags_perms:
             for slot_perm in slots_perms:
+                curr_allocation = [-1 for _ in range(len(slots))]
                 valid_allocation = True
                 slots_taken = []
                 curr_influence = 0

@@ -29,8 +29,6 @@ MAX_INFLUENCE = -1
 Q = [-1 for _ in range(len(slots))]
 allocated_slots = 0
 
-# tags_cnt = (tags_df.to_numpy())[0][0]
-# tags = [0 for i in range(tags_cnt)]
 tags_cnt = 4
 tags = [0 for _ in range(tags_cnt)]
 
@@ -42,7 +40,6 @@ for i in range(1 << tags_cnt):
             tags_comb.append(j)
 
     # Get all permutations of current tag combination
-    # tags_comb.sort()
     tags_perms = list(permutations(tags_comb))
 
     # Try all combinations of slots
@@ -54,7 +51,6 @@ for i in range(1 << tags_cnt):
                 slots_comb.append(l)
 
         # Get all permutations of current slot combination
-        # slots_comb.sort()
         slots_perms = list(permutations(slots_comb))
 
         # For each tag permutation to slot permutation

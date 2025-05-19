@@ -17,12 +17,12 @@ influence_table = influence_table_df.to_numpy()
 
 final_cost = 0
 total_cost = 0
-local_max_cost = 0
-for arr in billboards:
-    local_max_cost = max(local_max_cost, arr[2])
+for slot in slots:
+    billboard = slot[1]
+    cost = billboards[billboard][2]
+    total_cost += cost
 
-total_cost = local_max_cost * len(billboards)
-MAX_COST = random.randint(1, total_cost)
+MAX_COST = random.randint(1, total_cost + (total_cost // 3))
 
 MAX_INFLUENCE = -1
 

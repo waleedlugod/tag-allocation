@@ -1,7 +1,7 @@
 import random
 import pandas as pd
 
-MAX_COST = random.randint(400, 500)
+MAX_COST = 100
 
 billboards_df = pd.read_csv("billboards.csv")
 population_df = pd.read_csv("population.csv")
@@ -34,6 +34,7 @@ while allocated_slots < len(Q) and i < len(influence_table) and total_cost < MAX
     if (
         Q[int(influence[3])] == -1  # slot is free
         and influence[1] > 0  # influence of slot is greater than 0
+        and total_cost + cost <= MAX_COST
     ):
         Q[int(influence[3])] = int(influence[2])
         allocated_slots += 1

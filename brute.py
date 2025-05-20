@@ -30,15 +30,13 @@ LOCAL_Q = [-1 for _ in range(len(slots))]
 Q = [-1 for _ in range(len(slots))]
 
 tags_cnt = 4
-tags = [0 for _ in range(tags_cnt)]
-iterate_tags = [i for i in range(-1, tags_cnt)]
+tags = [i for i in range(-1, tags_cnt)]
 
 
 def brute(idx, cost):
     global Q
     global LOCAL_Q
     global tags
-    global iterate_tags
     global slots
     global billboards
     global MAX_COST
@@ -71,7 +69,7 @@ def brute(idx, cost):
 
         return
 
-    for tag in iterate_tags:
+    for tag in tags:
         for influence in influence_table:
             if int(influence[3]) == idx:
                 slot = int(influence[3])

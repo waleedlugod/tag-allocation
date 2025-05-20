@@ -1,5 +1,5 @@
 import random
-from itertools import permutations
+from copy import copy
 
 import pandas as pd
 
@@ -24,80 +24,64 @@ for slot in slots:
 
 MAX_COST = random.randint(1, total_cost + (total_cost // 3))
 
-MAX_INFLUENCE = -1
+MAX_INFLUENCE = 0
 
+LOCAL_Q = [-1 for _ in range(len(slots))]
 Q = [-1 for _ in range(len(slots))]
-allocated_slots = 0
 
 tags_cnt = 4
-tags = [0 for _ in range(tags_cnt)]
+tags = [i for i in range(-1, tags_cnt)]
 
-# Try all combinations of tags
-for i in range(1 << tags_cnt):
-    tags_comb = []
-    for j in range(tags_cnt):
-        if i & 1 << j:
-            tags_comb.append(j)
 
-    # Get all permutations of current tag combination
-    tags_perms = list(permutations(tags_comb))
+def brute(idx, cost):
+    global Q
+    global LOCAL_Q
+    global tags
+    global slots
+    global billboards
+    global MAX_COST
+    global MAX_INFLUENCE
+    global final_cost
+    global influence_table
 
-    # Try all combinations of slots
-    slots_comb = []
-    for k in range(1 << len(slots)):
-        slots_comb = []
-        for l in range(len(slots)):
-            if k & 1 << l:
-                slots_comb.append(l)
+    if idx >= len(Q):
+        curr_influence = 0
+        curr_cost = 0
 
-        # Get all permutations of current slot combination
-        slots_perms = list(permutations(slots_comb))
+        for i in range(len(Q)):
+            if LOCAL_Q[i] == -1:
+                continue
 
-        # For each tag permutation to slot permutation
-        # First, check if valid allocation
-        # If valid allocation, get influence
-        for tag_perm in tags_perms:
-            for slot_perm in slots_perms:
-                curr_allocation = [-1 for _ in range(len(slots))]
-                valid_allocation = True
-                slots_taken = []
-                curr_influence = 0
-                curr_cost = 0
+            for influence in influence_table:
+                if int(influence[2]) == LOCAL_Q[i] and int(influence[3]) == i:
+                    curr_influence += influence[1]
 
-                for l in range(min(len(tag_perm), len(slot_perm))):
-                    slot = slot_perm[l]
-                    billboard = int(slots[slot][1])
+                    billboard = slots[i][1]
+                    billboard_cost = billboards[billboard][2]
+                    curr_cost += billboard_cost
 
-                    if len(slots_taken) > 0:
-                        for other_slot in slots_taken:
-                            if other_slot[1] != slots[slot][1]:
-                                continue
+                    break
 
-                            if (
-                                other_slot[2] <= slots[slot][2]
-                                and other_slot[3] > slots[slot][2]
-                            ):
-                                valid_allocation = False
-                                break
-                    slots_taken.append(slots[slot])
+        if curr_influence > MAX_INFLUENCE and curr_cost <= MAX_COST:
+            final_cost = copy(curr_cost)
+            MAX_INFLUENCE = copy(curr_influence)
+            Q = copy(LOCAL_Q)
 
-                    cost = int(billboards[billboard][2])
-                    for influence in influence_table:
-                        if influence[2] == tag_perm[l] and influence[3] == slot:
-                            curr_allocation[slot] = int(influence[2])
-                            curr_influence += influence[1]
-                            curr_cost += cost
-                            break
+        return
 
-                # If current matching is best, store it
-                if (
-                    valid_allocation
-                    and curr_cost <= MAX_COST
-                    and curr_influence > MAX_INFLUENCE
-                ):
-                    Q = curr_allocation
-                    MAX_INFLUENCE = curr_influence
-                    final_cost = curr_cost
+    for tag in tags:
+        for influence in influence_table:
+            if int(influence[3]) == idx:
+                slot = int(influence[3])
+                billboard = slots[slot][1]
+                billboard_cost = billboards[billboard][2]
+
+                LOCAL_Q[idx] = tag
+                brute(idx + 1, cost + billboard_cost)
+                LOCAL_Q[idx] = -1
+
+
+brute(0, 0)
 
 print(
     Q,

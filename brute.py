@@ -11,8 +11,8 @@ influence_table_df = pd.read_csv("influence_table.csv").sort_values(
 )
 tags_df = pd.read_csv("tags.csv")
 
-billboards = billboards_df.to_numpy()[:3]
-slots = slots_df.to_numpy()[:3]
+billboards = billboards_df.to_numpy()[:4]
+slots = slots_df.to_numpy()[:4]
 influence_table = influence_table_df.to_numpy()
 
 final_cost = 0
@@ -29,7 +29,7 @@ MAX_INFLUENCE = 0
 LOCAL_Q = [-1 for _ in range(len(slots))]
 Q = [-1 for _ in range(len(slots))]
 
-tags_cnt = 3
+tags_cnt = 4
 tags = [0 for _ in range(tags_cnt)]
 iterate_tags = [i for i in range(-1, tags_cnt)]
 

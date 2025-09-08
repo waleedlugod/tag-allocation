@@ -9,7 +9,7 @@ slots_df = pd.read_csv("slots.csv")
 influence_table_df = pd.read_csv("influence_table.csv").sort_values(
     "influence", ascending=False
 )
-tags_df = pd.read_csv("tags.csv")
+meta_df = pd.read_csv("meta.csv")
 
 billboards = billboards_df.to_numpy()[:4]
 slots = slots_df.to_numpy()[:4]
@@ -22,14 +22,14 @@ for slot in slots:
     cost = billboards[billboard][2]
     total_cost += cost
 
-MAX_COST = random.randint(1, total_cost + (total_cost // 3))
+BUDGET = (meta_df.to_numpy())[0][1]
 
 MAX_INFLUENCE = 0
 
 LOCAL_Q = [-1 for _ in range(len(slots))]
 Q = [-1 for _ in range(len(slots))]
 
-tags_cnt = 4
+tags_cnt = (meta_df.to_numpy())[0][0]
 tags = [i for i in range(-1, tags_cnt)]
 
 
@@ -39,7 +39,7 @@ def brute(idx, cost):
     global tags
     global slots
     global billboards
-    global MAX_COST
+    global BUDGET
     global MAX_INFLUENCE
     global final_cost
     global influence_table
@@ -62,7 +62,7 @@ def brute(idx, cost):
 
                     break
 
-        if curr_influence > MAX_INFLUENCE and curr_cost <= MAX_COST:
+        if curr_influence > MAX_INFLUENCE and curr_cost <= BUDGET:
             final_cost = copy(curr_cost)
             MAX_INFLUENCE = copy(curr_influence)
             Q = copy(LOCAL_Q)
@@ -88,6 +88,6 @@ print(
     {
         "total influence": format(MAX_INFLUENCE, ".4f"),
         "total cost": final_cost,
-        "MAX COST": MAX_COST,
+        "BUDGET": format(BUDGET, ".0f"),
     },
 )

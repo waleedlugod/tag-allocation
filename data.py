@@ -5,18 +5,21 @@ import csv
 
 MAX_LOCATION_CNT = 5
 
-BILLBOARD_CNT = 5
+BILLBOARD_CNT = 2
 LOCATION_LEN = 5
 MAX_COST = 20
 
-MAX_POPULATION_CNT = 10
+MAX_POPULATION_CNT = 2
 MAX_TIMESTAMP = 20
 
-MAX_SLOT_CNT = 10
-MAX_INITIAL_SLOT_TIME = 5
+MAX_SLOT_CNT = 2
+MAX_INITIAL_SLOT_TIME = 0
 MAX_SLOT_DURATION = 15
 
-MAX_TAG_CNT = 15
+MIN_TAG_CNT = 0
+MAX_TAG_CNT = 4
+
+BUDGET = 15
 
 
 location_cnt = random.randint(1, MAX_LOCATION_CNT)
@@ -63,7 +66,7 @@ pd.DataFrame(slots, columns=["billboard", "start", "stop"]).rename_axis(
 
 # influence table
 # 0 if slot timestamp does not agree with user timestamp
-tag_cnt = random.randint(10, MAX_TAG_CNT)
+tag_cnt = random.randint(MIN_TAG_CNT, MAX_TAG_CNT)
 influences_table = []
 for tag in range(tag_cnt):
     for slot in range(len(slots)):
@@ -79,8 +82,8 @@ pd.DataFrame(influences_table, columns=["influence", "tag", "slot"]).rename_axis
     index="id"
 ).to_csv("influence_table.csv")
 
-# tag database
-with open("tags.csv", "w") as tagsfile:
-    tagswriter = csv.writer(tagsfile)
-    tagswriter.writerow(["tag count"])
-    tagswriter.writerow([tag_cnt])
+# meta information
+with open("meta.csv", "w") as metafile:
+    metawriter = csv.writer(metafile)
+    metawriter.writerow(["tag count", "budget"])
+    metawriter.writerow([tag_cnt, BUDGET])

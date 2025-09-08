@@ -1,7 +1,4 @@
-import random
 import pandas as pd
-
-MAX_COST = 3
 
 billboards_df = pd.read_csv("billboards.csv")
 population_df = pd.read_csv("population.csv")
@@ -9,14 +6,16 @@ slots_df = pd.read_csv("slots.csv")
 influence_table_df = pd.read_csv("influence_table.csv").sort_values(
     "influence", ascending=False
 )
-tags_df = pd.read_csv("tags.csv")
+meta_df = pd.read_csv("meta.csv")
 
 Q = [-1 for _ in range(len(slots_df))]
 allocated_slots_cnt = 0
 
-tags_cnt = (tags_df.to_numpy())[0][0]
+tags_cnt = (meta_df.to_numpy())[0][0]
 tags = [0 for i in range(tags_cnt)]
 allocated_tags = set()
+
+BUDGET = tags_cnt = (meta_df.to_numpy())[0][1]
 
 
 # allocate as much slots as possible to a tag
@@ -50,9 +49,7 @@ influence_table = influence_table_df.to_numpy()
 #     i += 1
 
 i = 0
-while (
-    allocated_slots_cnt < len(Q) and i < len(influence_table) and total_cost < MAX_COST
-):
+while allocated_slots_cnt < len(Q) and i < len(influence_table) and total_cost < BUDGET:
     influence = influence_table[i]
     slot = int(influence[3])
     billboard = int(slots[slot][1])
@@ -61,7 +58,7 @@ while (
     if (
         Q[slot] == -1  # slot is free
         and influence[1] > 0  # influence of slot is greater than 0
-        and total_cost + cost <= MAX_COST
+        and total_cost + cost <= BUDGET
     ):
         Q[slot] = tag
         allocated_slots_cnt += 1
@@ -74,6 +71,6 @@ print(
     {
         "total influence": format(total_influence, ".4f"),
         "total cost": total_cost,
-        "MAX COST": MAX_COST,
+        "MAX COST": format(BUDGET, ".0f"),
     },
 )

@@ -7,6 +7,7 @@ MAX_LOCATION_CNT = 5
 
 BILLBOARD_CNT = 2
 LOCATION_LEN = 5
+MIN_COST = 5
 MAX_COST = 20
 
 MAX_POPULATION_CNT = 2
@@ -45,7 +46,7 @@ pd.DataFrame(population, columns=["location", "start", "stop"]).rename_axis(
 billboards = []
 for i in range(BILLBOARD_CNT):
     location = random.choice(locations)
-    cost = random.randint(1, MAX_COST)
+    cost = random.randint(MIN_COST, MAX_COST)
     billboards.append([location, cost])
 pd.DataFrame(billboards, columns=["location", "cost"]).rename_axis(index="id").to_csv(
     "billboards.csv"

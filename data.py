@@ -14,7 +14,7 @@ MAX_TIMESTAMP = 20
 
 MAX_SLOT_CNT = 2
 MAX_INITIAL_SLOT_TIME = 0
-MAX_SLOT_DURATION = 15
+MAX_SLOT_DURATION = 5
 
 MIN_TAG_CNT = 0
 MAX_TAG_CNT = 4
@@ -77,10 +77,11 @@ for tag in range(tag_cnt):
             ):
                 influence = random.random()
                 total_influence += influence
-        influences_table.append([format(total_influence, ".4f"), tag, slot])
-pd.DataFrame(influences_table, columns=["influence", "tag", "slot"]).rename_axis(
-    index="id"
-).to_csv("influence_table.csv")
+        cost = billboards[slots[slot][0]][1]
+        influences_table.append([format(total_influence, ".4f"), tag, slot, cost])
+pd.DataFrame(
+    influences_table, columns=["influence", "tag", "slot", "cost"]
+).rename_axis(index="id").to_csv("influence_table.csv")
 
 # meta information
 with open("meta.csv", "w") as metafile:

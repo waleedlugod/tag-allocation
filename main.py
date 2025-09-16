@@ -4,6 +4,9 @@ import math
 NUM_TEST_CASES = 100
 
 num_correct = {
+    "brute": {
+        "avg_cost": 0
+    },
     "greedy": {
         "correct_cnt": 0,
         "avg_cost": 0
@@ -34,6 +37,8 @@ for test_case in range(1, NUM_TEST_CASES+1):
     greedy_influence_cost_ratio = importlib.import_module("greedy_influence_cost_ratio")
     importlib.reload(greedy_influence_cost_ratio)
 
+    num_correct["brute"]["avg_cost"] += brute.final_cost
+
     if math.isclose(brute.MAX_INFLUENCE, greedy.total_influence, rel_tol=1e-6):
         num_correct["greedy"]["correct_cnt"] += 1
         num_correct["greedy"]["avg_cost"] += greedy.total_cost
@@ -44,11 +49,13 @@ for test_case in range(1, NUM_TEST_CASES+1):
         num_correct["greedy_influence_cost_ratio"]["correct_cnt"] += 1
         num_correct["greedy_influence_cost_ratio"]["avg_cost"] += greedy_influence_cost_ratio.total_cost
 
+num_correct["brute"]["avg_cost"] /= NUM_TEST_CASES
 num_correct["greedy"]["avg_cost"] /= NUM_TEST_CASES
 num_correct["greedy_cost"]["avg_cost"] /= NUM_TEST_CASES
 num_correct["greedy_influence_cost_ratio"]["avg_cost"] /= NUM_TEST_CASES
 
 print("\nFINAL")
+print(f"Brute-force Average Cost: {num_correct["brute"]["avg_cost"]}\n")
 print(f"Greedy (Influence) Performance: {num_correct["greedy"]["correct_cnt"]/NUM_TEST_CASES*100}%")
 print(f"Greedy (Influence) Average Cost: {num_correct["greedy"]["avg_cost"]}\n")
 print(f"Greedy (Cost) Performance: {num_correct["greedy_cost"]["correct_cnt"]/NUM_TEST_CASES*100}%")

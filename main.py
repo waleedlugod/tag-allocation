@@ -48,6 +48,10 @@ num_correct["greedy"]["avg_cost"] /= NUM_TEST_CASES
 num_correct["greedy_cost"]["avg_cost"] /= NUM_TEST_CASES
 num_correct["greedy_influence_cost_ratio"]["avg_cost"] /= NUM_TEST_CASES
 
-print()
-print("FINAL")
-print(num_correct)
+print("\nFINAL")
+print(f"Greedy (Influence) Performance: {num_correct["greedy"]["correct_cnt"]/NUM_TEST_CASES*100}%")
+print(f"Greedy (Influence) Average Cost: {num_correct["greedy"]["avg_cost"]}\n")
+print(f"Greedy (Cost) Performance: {num_correct["greedy_cost"]["correct_cnt"]/NUM_TEST_CASES*100}%")
+print(f"Greedy (Cost) Average Cost: {num_correct["greedy_cost"]["avg_cost"]}\n")
+print(f"Greedy (Influence/Cost) Performance: {num_correct["greedy_influence_cost_ratio"]["correct_cnt"]/NUM_TEST_CASES*100}%")
+print(f"Greedy (Influence/Cost) Average Cost: {num_correct["greedy_influence_cost_ratio"]["avg_cost"]}")

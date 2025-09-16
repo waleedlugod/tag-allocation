@@ -11,8 +11,8 @@ influence_table_df = pd.read_csv("influence_table.csv").sort_values(
 )
 meta_df = pd.read_csv("meta.csv")
 
-billboards = billboards_df.to_numpy()[:4]
-slots = slots_df.to_numpy()[:4]
+billboards = billboards_df.to_numpy()
+slots = slots_df.to_numpy()
 influence_table = influence_table_df.to_numpy()
 
 final_cost = 0

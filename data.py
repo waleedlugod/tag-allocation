@@ -5,7 +5,7 @@ import csv
 
 MAX_LOCATION_CNT = 5
 
-BILLBOARD_CNT = 4
+BILLBOARD_CNT = 2
 LOCATION_LEN = 5
 MIN_COST = 5
 MAX_COST = 10
@@ -13,12 +13,12 @@ MAX_COST = 10
 MAX_POPULATION_CNT = 20
 MAX_TIMESTAMP = 15
 
-MAX_SLOT_CNT = 4
+MAX_SLOT_CNT = 2
 MAX_INITIAL_SLOT_TIME = 0
 MAX_SLOT_DURATION = 3
 
 MIN_TAG_CNT = 1
-MAX_TAG_CNT = 4
+MAX_TAG_CNT = 2
 
 BUDGET = 15
 
@@ -55,13 +55,12 @@ pd.DataFrame(billboards, columns=["location", "cost"]).rename_axis(index="id").t
 # slots database
 slots = []
 for billboard in range(BILLBOARD_CNT):
-    # slot_cnt = random.randint(1, MAX_SLOT_CNT)
+    slot_cnt = random.randint(1, MAX_SLOT_CNT)
     initial = random.randint(0, MAX_INITIAL_SLOT_TIME)
     duration = random.randint(1, MAX_SLOT_DURATION)
-    slots.append([billboard, initial, initial + duration])
-    # for slot in range(slot_cnt):
-    #     slots.append([billboard, initial, initial + duration])
-    #     initial += duration + 1
+    for slot in range(slot_cnt):
+        slots.append([billboard, initial, initial + duration])
+        initial += duration + 1
 pd.DataFrame(slots, columns=["billboard", "start", "stop"]).rename_axis(
     index="id"
 ).to_csv("slots.csv")

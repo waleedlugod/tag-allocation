@@ -40,7 +40,7 @@ for test_case in range(1, NUM_TEST_CASES + 1):
 
     num_correct["greedy"]["avg_error_ratio"] += (
         brute.MAX_INFLUENCE / greedy.total_influence
-        if not math.isclose(0, greedy_cost.total_influence, rel_tol=1e-6)
+        if not math.isclose(0, greedy.total_influence, rel_tol=1e-6)
         else 1
     )
     num_correct["greedy_cost"]["avg_error_ratio"] += (

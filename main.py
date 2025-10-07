@@ -14,6 +14,8 @@ num_correct = {
     },
 }
 
+influences_file = open("influences.txt", "w")
+
 for test_case in range(1, NUM_TEST_CASES + 1):
     data = importlib.import_module("data")
     importlib.reload(data)

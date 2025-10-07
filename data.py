@@ -8,8 +8,8 @@ LOCATION_NAME_LEN = 5
 MIN_COST = 5
 MAX_COST = 10
 
-MIN_POPULATION_CNT = 10
-MAX_POPULATION_CNT = 50
+MIN_POPULATION_CNT = 20
+MAX_POPULATION_CNT = 60
 MAX_TIMESTAMP = 15
 
 MIN_SLOT_CNT = 2
@@ -66,6 +66,7 @@ pd.DataFrame(slots, columns=["billboard", "start", "stop"]).rename_axis(
 # 0 if slot timestamp does not agree with user timestamp
 tag_cnt = random.randint(MIN_TAG_CNT, MAX_TAG_CNT)
 influences_table = []
+influences_file = open("influences.txt", "a")
 for tag in range(tag_cnt):
     for slot in range(len(slots)):
         total_influence = 0
@@ -77,6 +78,7 @@ for tag in range(tag_cnt):
                 total_influence += influence
         cost = billboards[slots[slot][0]][1]
         influences_table.append([format(total_influence, ".4f"), tag, slot, cost])
+        influences_file.write(f"{total_influence}\n")
 pd.DataFrame(
     influences_table, columns=["influence", "tag", "slot", "cost"]
 ).rename_axis(index="id").to_csv("influence_table.csv")

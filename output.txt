@@ -1,0 +1,10 @@
+Brute-force Average Cost: 12.24
+Greedy (Influence) Performance: 0.97
+Greedy (Influence) Average Approximation Ratio: 0.9941466867532895
+Greedy (Influence) Average Cost: 12.16
+Greedy (Cost) Performance: 0.41
+Greedy (Cost) Average Approximation Ratio: 0.8188954721294346
+Greedy (Cost) Average Cost: 10.93
+Greedy (Influence/Cost) Performance: 0.87
+Greedy (Influence/Cost) Average Approximation Ratio: 0.9923266668904077
+Greedy (Influence/Cost) Average Cost: 11.92

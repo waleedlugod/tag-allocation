@@ -75,7 +75,7 @@ for tag in range(tag_cnt):
         for user in range(len(population)):
             if max(population[user][1], slots[slot][1]) < min(
                 population[user][2], slots[slot][2]
-            ):
+            ) and population[user][0]==billboards[slots[slot][0]][0]:
                 influence = random.random()
                 total_influence += influence
         cost = billboards[slots[slot][0]][1]

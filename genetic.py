@@ -1,7 +1,8 @@
 import pandas as pd
 import random
+import sys
 
-GENERATIONS = 25
+GENERATIONS = int(sys.argv[1])
 
 influence_table_df = pd.read_csv("influence_table.csv")
 influence_table = influence_table_df.to_numpy()
@@ -103,6 +104,19 @@ for i in range(GENERATIONS):
 
     population = next_generation
 
+    mutation_probability = 0.1
+
+    for indiv in population:
+        if random.random() <= mutation_probability:
+            # print("mutation time!")
+            mutant = random.choice(population)
+            initial_fitness = mutant.fitness
+            # print(f"before: {mutant}")
+            mutation_index = random.randint(0, slots_cnt-1)
+            mutant.alloc[mutation_index] = random.choice(tags)
+            mutant.calculate_cost_fitness()
+            new_fitness = mutant.fitness
+            # print(f"after: {mutant}, diff: {new_fitness-initial_fitness}")
 
 # print(" === population === ")
 # print(population)

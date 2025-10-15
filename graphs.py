@@ -40,13 +40,18 @@ axes = plt.gca()
 axes.set_ylim([0, brute_avg_cost])
 
 # influence distribution
-# note: graph is left skewed as not all users contribute to the total influence value (i.e. 0 value)
+# note: graph is right skewed as not all users contribute to the final influence value (i.e. 0 value)
 influences = open("influences.txt", "r").readlines()
 influences = [float(_) for _ in influences]
 plt.figure()
 plt.hist(influences)
 plt.ylabel("Influence")
 plt.title("Distribution of Influence Values From Influence Table")
+plt.annotate(
+    "Not all users contribute to the final influence value (i.e. have a 0 influence value)\nresulting in a right skew",
+    xy=(0, 0.008),
+    xycoords="figure fraction",
+)
 
 raw_influences = open("raw_influences.txt", "r").readlines()
 raw_influences = [float(_) for _ in raw_influences]

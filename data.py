@@ -78,6 +78,8 @@ for tag in range(tag_cnt):
                 influence = random.random()
                 raw_influences_file.write(f"{influence:.4f}\n")
                 total_influence += influence
+            else:
+                raw_influences_file.write("0\n")
         cost = billboards[slots[slot][0]][1]
         influences_table.append([format(total_influence, ".4f"), tag, slot, cost])
         influences_file.write(f"{total_influence:.4f}\n")

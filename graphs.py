@@ -40,6 +40,7 @@ axes = plt.gca()
 axes.set_ylim([0, brute_avg_cost])
 
 # influence distribution
+# note: graph is left skewed as not all users contribute to the total influence value (i.e. 0 value)
 influences = open("influences.txt", "r").readlines()
 influences = [float(_) for _ in influences]
 plt.figure()
@@ -53,5 +54,11 @@ plt.figure()
 plt.hist(raw_influences)
 plt.ylabel("Influence")
 plt.title("Distribution of Raw Influence Values (0-1)")
+
+raw_influences = [_ for _ in raw_influences if _ > 0]
+plt.figure()
+plt.hist(raw_influences)
+plt.ylabel("Influence")
+plt.title("Distribution of Raw Influence Values (No Zeroes)")
 
 plt.show()

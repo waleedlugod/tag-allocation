@@ -67,6 +67,7 @@ pd.DataFrame(slots, columns=["billboard", "start", "stop"]).rename_axis(
 tag_cnt = random.randint(MIN_TAG_CNT, MAX_TAG_CNT)
 influences_table = []
 influences_file = open("influences.txt", "a")
+raw_influences_file = open("raw_influences.txt", "a")
 for tag in range(tag_cnt):
     for slot in range(len(slots)):
         total_influence = 0
@@ -75,10 +76,11 @@ for tag in range(tag_cnt):
                 population[user][2], slots[slot][2]
             ):
                 influence = random.random()
+                raw_influences_file.write(f"{influence:.4f}\n")
                 total_influence += influence
         cost = billboards[slots[slot][0]][1]
         influences_table.append([format(total_influence, ".4f"), tag, slot, cost])
-        influences_file.write(f"{total_influence}\n")
+        influences_file.write(f"{total_influence:.4f}\n")
 pd.DataFrame(
     influences_table, columns=["influence", "tag", "slot", "cost"]
 ).rename_axis(index="id").to_csv("influence_table.csv")

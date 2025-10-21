@@ -68,13 +68,15 @@ tag_cnt = random.randint(MIN_TAG_CNT, MAX_TAG_CNT)
 influences_table = []
 influences_file = open("influences.txt", "a")
 raw_influences_file = open("raw_influences.txt", "a")
-for tag in range(tag_cnt):
-    for slot in range(len(slots)):
+for slot in range(len(slots)):
+    for tag in range(tag_cnt):
         total_influence = 0
         for user in range(len(population)):
-            if max(population[user][1], slots[slot][1]) < min(
-                population[user][2], slots[slot][2]
-            ) and population[user][0]==billboards[slots[slot][0]][0]:
+            if (
+                max(population[user][1], slots[slot][1])
+                < min(population[user][2], slots[slot][2])
+                and population[user][0] == billboards[slots[slot][0]][0]
+            ):
                 influence = random.random()
                 raw_influences_file.write(f"{influence:.4f}\n")
                 total_influence += influence

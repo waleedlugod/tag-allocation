@@ -54,6 +54,8 @@ for s in range(len(slots) + 1):
         # copy values of previous row
         else:
             memo[s][w] = memo[s - 1][w]
+
+            # update allocations (Q)
             for _ in range(len(slots)):
                 memoQ[s][w][_] = memoQ[s - 1][w][_]
 

@@ -56,18 +56,17 @@ for s in range(len(slots) + 1):
 
 
 # find allocations
+total_cost = 0
 Q = [-1 for _ in range(len(slots))]
 coords = [len(slots), BUDGET]
 idx = len(slots) - 1
 while idx > -1:
     Q[idx] = memo[coords[0]][coords[1]]["allocated_tag"]
     coords = memo[coords[0]][coords[1]]["prev_coords"]
+    if Q[idx] != -1:
+        total_cost += billboards[slots[idx][1]][2]
     idx -= 1
 
-total_cost = 0
-for slot in range(len(Q)):
-    if Q[slot] != -1:
-        total_cost += billboards[slots[slot][1]][2]
 total_influence = memo[-1][-1]["profit"]
 
 print(

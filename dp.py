@@ -14,6 +14,12 @@ memo = [
     for _ in range(len(slots) + 1)
 ]
 
+max_influence_of_slots = [[-1, -1]] * len(slots)  # [influence, tag]
+for i in influence_table:
+    tag_slot_influence = max_influence_of_slots[int(i[3])][0]
+    if i[1] > tag_slot_influence:
+        max_influence_of_slots[int(i[3])] = [float(i[1]), int(i[2])]
+
 for s in range(len(slots) + 1):
     for w in range(BUDGET + 1):
         slot_weight = billboards[slots[s - 1][1]][2] if s > 0 else 0
@@ -24,21 +30,12 @@ for s in range(len(slots) + 1):
         # if weight of the slot considered is within sub-weight
         elif slot_weight <= w:
             # get max influence from influences of a slot
-            first_idx = (s - 1) * tag_count
-            last_idx = (s - 1) * tag_count + tag_count
-            influences_of_slot = [_ for _ in influence_table[first_idx:last_idx]]
-            # find max and index of max
-            profit = influences_of_slot[0][1]
-            profit_idx = 0
-            for i in range(len(influences_of_slot)):
-                if influences_of_slot[i][1] > profit:
-                    profit = influences_of_slot[i][1]
-                    profit_idx = i
+            profit = max_influence_of_slots[s - 1]
 
             memo[s][w]["profit"] = float(
                 max(
                     memo[s - 1][w]["profit"],
-                    memo[s - 1][w - slot_weight]["profit"] + profit,
+                    memo[s - 1][w - slot_weight]["profit"] + profit[0],
                 )
             )
 
@@ -46,7 +43,7 @@ for s in range(len(slots) + 1):
             if memo[s][w]["profit"] > memo[s - 1][w]["profit"]:
                 for _ in range(len(slots)):
                     memo[s][w]["Q"][_] = memo[s - 1][w - slot_weight]["Q"][_]
-                memo[s][w]["Q"][s - 1] = profit_idx
+                memo[s][w]["Q"][s - 1] = profit[1]
             else:
                 for _ in range(len(slots)):
                     memo[s][w]["Q"][_] = memo[s - 1][w]["Q"][_]

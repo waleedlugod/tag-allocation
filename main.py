@@ -3,111 +3,75 @@ import math
 
 NUM_TEST_CASES = 100
 
-num_correct = {
-    "brute": {"avg_cost": 0},
-    "greedy": {"correct_cnt": 0, "avg_cost": 0, "avg_approx_ratio": 0},
-    "greedy_cost": {"correct_cnt": 0, "avg_cost": 0, "avg_approx_ratio": 0},
-    "greedy_influence_cost_ratio": {
-        "correct_cnt": 0,
-        "avg_cost": 0,
-        "avg_approx_ratio": 0,
-    },
-    "dp": {
-        "correct_cnt": 0,
-        "avg_cost": 0,
-        "avg_approx_ratio": 0,
-    },
-}
+# heuristics to test
+# first heuristic is set as control
+heuristics = ["brute", "greedy", "greedy_cost", "greedy_influence_cost_ratio", "dp"]
+titles = [
+    "Brute-force",
+    "Greedy (Influence)",
+    "Greedy (Cost)",
+    "Greedy (Influence/Cost)",
+    "DP",
+]
 
-influences_file = open("influences.txt", "w")
-raw_influences_file = open("raw_influences.txt", "w")
+results = {}
+for i in range(len(heuristics)):
+    results[heuristics[i]] = {}
+    results[heuristics[i]]["title"] = titles[i]
+    results[heuristics[i]]["agg_total_cost"] = 0
+    if i != 0:
+        results[heuristics[i]]["correct_cnt"] = 0
+        results[heuristics[i]]["agg_approx_ratio"] = 0
 
-for test_case in range(1, NUM_TEST_CASES + 1):
-    data = importlib.import_module("data")
-    importlib.reload(data)
+h = [None] * len(heuristics)
+for test in range(NUM_TEST_CASES):
+    importlib.reload(importlib.import_module("data"))
 
-    brute = importlib.import_module("brute")
-    importlib.reload(brute)
+    for _ in range(len(heuristics)):
+        h[_] = importlib.import_module(heuristics[_])
+        importlib.reload(h[_])
 
-    greedy = importlib.import_module("greedy")
-    importlib.reload(greedy)
+    results[heuristics[0]]["agg_total_cost"] = h[0].total_cost
 
-    greedy_cost = importlib.import_module("greedy_cost")
-    importlib.reload(greedy_cost)
+    for i in range(1, len(heuristics)):
+        results[heuristics[i]]["agg_total_cost"] += h[i].total_cost
+        results[heuristics[i]]["agg_approx_ratio"] += (
+            h[i].total_influence / h[0].total_influence
+            if not math.isclose(0, h[0].total_influence, rel_tol=1e-6)
+            else 1
+        )
+        if math.isclose(h[0].total_influence, h[i].total_influence, rel_tol=1e-6):
+            results[heuristics[i]]["correct_cnt"] += 1
 
-    greedy_influence_cost_ratio = importlib.import_module("greedy_influence_cost_ratio")
-    importlib.reload(greedy_influence_cost_ratio)
+for i in range(len(h)):
+    if i == 0:
+        results[heuristics[i]]["avg_cost"] = (
+            results[heuristics[i]]["agg_total_cost"] / NUM_TEST_CASES
+        )
+    else:
+        results[heuristics[i]]["avg_cost"] = (
+            results[heuristics[i]]["agg_total_cost"] / NUM_TEST_CASES
+        )
+        results[heuristics[i]]["avg_approx_ratio"] = (
+            results[heuristics[i]]["agg_approx_ratio"] / NUM_TEST_CASES
+        )
+        results[heuristics[i]]["performance"] = (
+            results[heuristics[i]]["correct_cnt"] / NUM_TEST_CASES
+        )
 
-    dp = importlib.import_module("dp")
-    importlib.reload(dp)
-
-    num_correct["brute"]["avg_cost"] += brute.final_cost
-
-    num_correct["greedy"]["avg_cost"] += greedy.total_cost
-    num_correct["greedy_cost"]["avg_cost"] += greedy_cost.total_cost
-    num_correct["greedy_influence_cost_ratio"][
-        "avg_cost"
-    ] += greedy_influence_cost_ratio.total_cost
-    num_correct["dp"]["avg_cost"] += dp.total_cost
-
-    num_correct["greedy"]["avg_approx_ratio"] += (
-        greedy.total_influence / brute.MAX_INFLUENCE
-        if not math.isclose(0, brute.MAX_INFLUENCE, rel_tol=1e-6)
-        else 1
-    )
-    num_correct["greedy_cost"]["avg_approx_ratio"] += (
-        greedy_cost.total_influence / brute.MAX_INFLUENCE
-        if not math.isclose(0, brute.MAX_INFLUENCE, rel_tol=1e-6)
-        else 1
-    )
-    num_correct["greedy_influence_cost_ratio"]["avg_approx_ratio"] += (
-        greedy_influence_cost_ratio.total_influence / brute.MAX_INFLUENCE
-        if not math.isclose(0, brute.MAX_INFLUENCE, rel_tol=1e-6)
-        else 1
-    )
-    num_correct["dp"]["avg_approx_ratio"] += (
-        dp.total_influence / brute.MAX_INFLUENCE
-        if not math.isclose(0, brute.MAX_INFLUENCE, rel_tol=1e-6)
-        else 1
-    )
-
-    if math.isclose(brute.MAX_INFLUENCE, greedy.total_influence, rel_tol=1e-6):
-        num_correct["greedy"]["correct_cnt"] += 1
-    if math.isclose(brute.MAX_INFLUENCE, greedy_cost.total_influence, rel_tol=1e-6):
-        num_correct["greedy_cost"]["correct_cnt"] += 1
-    if math.isclose(
-        brute.MAX_INFLUENCE, greedy_influence_cost_ratio.total_influence, rel_tol=1e-6
-    ):
-        num_correct["greedy_influence_cost_ratio"]["correct_cnt"] += 1
-    if math.isclose(brute.MAX_INFLUENCE, dp.total_influence, rel_tol=1e-6):
-        num_correct["dp"]["correct_cnt"] += 1
-
-num_correct["brute"]["avg_cost"] /= NUM_TEST_CASES
-num_correct["greedy"]["avg_cost"] /= NUM_TEST_CASES
-num_correct["greedy_cost"]["avg_cost"] /= NUM_TEST_CASES
-num_correct["greedy_influence_cost_ratio"]["avg_cost"] /= NUM_TEST_CASES
-num_correct["dp"]["avg_cost"] /= NUM_TEST_CASES
-
-num_correct["greedy"]["avg_approx_ratio"] /= NUM_TEST_CASES
-num_correct["greedy_cost"]["avg_approx_ratio"] /= NUM_TEST_CASES
-num_correct["greedy_influence_cost_ratio"]["avg_approx_ratio"] /= NUM_TEST_CASES
-num_correct["dp"]["avg_approx_ratio"] /= NUM_TEST_CASES
-
-with open("output.txt", "w") as outputf:
-    outputf.writelines(
-        [
-            f"Brute-force Average Cost: {num_correct['brute']['avg_cost']}\n",
-            f"Greedy (Influence) Performance: {num_correct['greedy']['correct_cnt']/NUM_TEST_CASES}\n",
-            f"Greedy (Influence) Average Approximation Ratio: {num_correct['greedy']['avg_approx_ratio']}\n",
-            f"Greedy (Influence) Average Cost: {num_correct['greedy']['avg_cost']}\n",
-            f"Greedy (Cost) Performance: {num_correct['greedy_cost']['correct_cnt']/NUM_TEST_CASES}\n",
-            f"Greedy (Cost) Average Approximation Ratio: {num_correct['greedy_cost']['avg_approx_ratio']}\n",
-            f"Greedy (Cost) Average Cost: {num_correct['greedy_cost']['avg_cost']}\n",
-            f"Greedy (Influence/Cost) Performance: {num_correct['greedy_influence_cost_ratio']['correct_cnt']/NUM_TEST_CASES}\n",
-            f"Greedy (Influence/Cost) Average Approximation Ratio: {num_correct['greedy_influence_cost_ratio']['avg_approx_ratio']}\n",
-            f"Greedy (Influence/Cost) Average Cost: {num_correct['greedy_influence_cost_ratio']['avg_cost']}\n",
-            f"DP Performance: {num_correct['dp']['correct_cnt']/NUM_TEST_CASES}\n",
-            f"DP Average Approximation Ratio: {num_correct['dp']['avg_approx_ratio']}\n",
-            f"DP Average Cost: {num_correct['dp']['avg_cost']}\n",
-        ]
-    )
+with open("output.txt", "w") as f:
+    for i in range(len(heuristics)):
+        if i == 0:
+            f.write(
+                f"{results[heuristics[i]]['title']} Average Cost: {results[heuristics[i]]['avg_cost']:.2f}\n"
+            )
+        else:
+            f.write(
+                f"{results[heuristics[i]]['title']} Performance: {results[heuristics[i]]['performance']:.2f}\n"
+            )
+            f.write(
+                f"{results[heuristics[i]]['title']} Average Approximation Ratio: {results[heuristics[i]]['avg_approx_ratio']:.2f}\n"
+            )
+            f.write(
+                f"{results[heuristics[i]]['title']} Average Csot: {results[heuristics[i]]['avg_cost']:.2f}\n"
+            )

@@ -15,16 +15,14 @@ billboards = billboards_df.to_numpy()
 slots = slots_df.to_numpy()
 influence_table = influence_table_df.to_numpy()
 
-final_cost = 0
 total_cost = 0
 for slot in slots:
     billboard = slot[1]
     cost = billboards[billboard][2]
-    total_cost += cost
 
 BUDGET = (meta_df.to_numpy())[0][1]
 
-MAX_INFLUENCE = 0
+total_influence = 0
 
 LOCAL_Q = [-1 for _ in range(len(slots))]
 Q = [-1 for _ in range(len(slots))]
@@ -40,8 +38,8 @@ def brute(idx, cost):
     global slots
     global billboards
     global BUDGET
-    global MAX_INFLUENCE
-    global final_cost
+    global total_influence
+    global total_cost
     global influence_table
 
     if idx >= len(Q):
@@ -62,9 +60,9 @@ def brute(idx, cost):
 
                     break
 
-        if curr_influence > MAX_INFLUENCE and curr_cost <= BUDGET:
-            final_cost = copy(curr_cost)
-            MAX_INFLUENCE = copy(curr_influence)
+        if curr_influence > total_influence and curr_cost <= BUDGET:
+            total_cost = copy(curr_cost)
+            total_influence = copy(curr_influence)
             Q = copy(LOCAL_Q)
 
         return
@@ -86,8 +84,8 @@ brute(0, 0)
 print(
     Q,
     {
-        "total influence": format(MAX_INFLUENCE, ".4f"),
-        "total cost": final_cost,
+        "total influence": format(total_influence, ".4f"),
+        "total cost": total_cost,
         "BUDGET": format(BUDGET, ".0f"),
     },
 )

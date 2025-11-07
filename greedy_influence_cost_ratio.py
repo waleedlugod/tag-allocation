@@ -1,6 +1,5 @@
 import pandas as pd
 
-
 billboards_df = pd.read_csv("billboards.csv")
 population_df = pd.read_csv("population.csv")
 slots_df = pd.read_csv("slots.csv")

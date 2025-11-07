@@ -57,10 +57,9 @@ for s in range(len(slots) + 1):
 
 # find allocations
 Q = [-1 for _ in range(len(slots))]
-prev_coords = memo[-1][-1]["prev_coords"]
 coords = [len(slots), BUDGET]
 idx = len(slots) - 1
-while coords[0] != -1 and coords[1] != -1:
+while idx > -1:
     Q[idx] = memo[coords[0]][coords[1]]["allocated_tag"]
     coords = memo[coords[0]][coords[1]]["prev_coords"]
     idx -= 1

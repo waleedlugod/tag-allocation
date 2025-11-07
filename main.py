@@ -31,7 +31,7 @@ for test in range(NUM_TEST_CASES):
         h[_] = importlib.import_module(heuristics[_])
         importlib.reload(h[_])
 
-    results[heuristics[0]]["agg_total_cost"] = h[0].total_cost
+    results[heuristics[0]]["agg_total_cost"] += h[0].total_cost
 
     for i in range(1, len(heuristics)):
         results[heuristics[i]]["agg_total_cost"] += h[i].total_cost
@@ -73,5 +73,5 @@ with open("output.txt", "w") as f:
                 f"{results[heuristics[i]]['title']} Average Approximation Ratio: {results[heuristics[i]]['avg_approx_ratio']:.2f}\n"
             )
             f.write(
-                f"{results[heuristics[i]]['title']} Average Csot: {results[heuristics[i]]['avg_cost']:.2f}\n"
+                f"{results[heuristics[i]]['title']} Average Cost: {results[heuristics[i]]['avg_cost']:.2f}\n"
             )

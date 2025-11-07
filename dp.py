@@ -10,7 +10,10 @@ BUDGET = meta[0][1]
 tag_count = meta[0][0]
 
 memo = [
-    [{"profit": 0, "Q": [-1] * len(slots)} for _ in range(BUDGET + 1)]
+    [
+        {"profit": 0, "prev_coords": [-1, -1], "allocated_tag": -1}
+        for _ in range(BUDGET + 1)
+    ]
     for _ in range(len(slots) + 1)
 ]
 
@@ -38,25 +41,30 @@ for s in range(len(slots) + 1):
                     memo[s - 1][w - slot_weight]["profit"] + profit[0],
                 )
             )
-
-            # update allocations (Q)
+            # update allocations
             if memo[s][w]["profit"] > memo[s - 1][w]["profit"]:
-                for _ in range(len(slots)):
-                    memo[s][w]["Q"][_] = memo[s - 1][w - slot_weight]["Q"][_]
-                memo[s][w]["Q"][s - 1] = profit[1]
+                memo[s][w]["prev_coords"] = [s - 1, w - slot_weight]
+                memo[s][w]["allocated_tag"] = profit[1]
             else:
-                for _ in range(len(slots)):
-                    memo[s][w]["Q"][_] = memo[s - 1][w]["Q"][_]
+                memo[s][w]["prev_coords"] = [s - 1, w]
 
         # copy values of previous row
         else:
             memo[s][w]["profit"] = memo[s - 1][w]["profit"]
+            # update allocations
+            memo[s][w]["prev_coords"] = [s - 1, w]
 
-            # update allocations (Q)
-            for _ in range(len(slots)):
-                memo[s][w]["Q"][_] = memo[s - 1][w]["Q"][_]
 
-Q = memo[-1][-1]["Q"]
+# find allocations
+Q = [-1 for _ in range(len(slots))]
+prev_coords = memo[-1][-1]["prev_coords"]
+coords = [len(slots), BUDGET]
+idx = len(slots) - 1
+while coords[0] != -1 and coords[1] != -1:
+    Q[idx] = memo[coords[0]][coords[1]]["allocated_tag"]
+    coords = memo[coords[0]][coords[1]]["prev_coords"]
+    idx -= 1
+
 total_cost = 0
 for slot in range(len(Q)):
     if Q[slot] != -1:

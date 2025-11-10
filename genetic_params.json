@@ -1,0 +1,8 @@
+{
+    "show_alloc": false,
+    "population_size": 100,
+    "parent_child_ratio": 0.5,
+    "RWS_percentage": 0.5,
+    "NPC_percentage": 0.5,
+    "mutation_probability": 1
+}

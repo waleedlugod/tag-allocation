@@ -4,24 +4,24 @@ import string
 import pandas as pd
 import csv
 
-BILLBOARD_CNT = 20
+BILLBOARD_CNT = 2
 LOCATION_NAME_LEN = 5
 MIN_COST = 5
 MAX_COST = 10
 
-MIN_POPULATION_CNT = 250
-MAX_POPULATION_CNT = 250
-MAX_TIMESTAMP = 24*7
+MIN_POPULATION_CNT = 20
+MAX_POPULATION_CNT = 60
+MAX_TIMESTAMP = 15
 
-MIN_SLOT_CNT = 5
-MAX_SLOT_CNT = 5
+MIN_SLOT_CNT = 2
+MAX_SLOT_CNT = 2
 MAX_INITIAL_SLOT_TIME = 0
 MAX_SLOT_DURATION = 3
 
-MIN_TAG_CNT = 15
-MAX_TAG_CNT = 15
+MIN_TAG_CNT = 2
+MAX_TAG_CNT = 3
 
-BUDGET = 100
+BUDGET = 15
 
 
 # billboard database
@@ -55,7 +55,7 @@ slots = []
 for billboard in range(BILLBOARD_CNT):
     initial = random.randint(0, MAX_INITIAL_SLOT_TIME)
     duration = random.randint(1, MAX_SLOT_DURATION)
-    slot_cnt = MAX_TIMESTAMP / (duration + 1)
+    slot_cnt = random.randint(MIN_SLOT_CNT, MAX_SLOT_CNT)
     for slot in range(math.floor(slot_cnt)):
         slots.append([billboard, initial, initial + duration])
         initial += duration + 1
@@ -68,24 +68,18 @@ pd.DataFrame(slots, columns=["billboard", "start", "stop"]).rename_axis(
 tag_cnt = random.randint(MIN_TAG_CNT, MAX_TAG_CNT)
 influences_table = []
 influences_file = open("influences.txt", "a")
-raw_influences_file = open("raw_influences.txt", "a")
-for slot in range(len(slots)):
-    for tag in range(tag_cnt):
+for tag in range(tag_cnt):
+    for slot in range(len(slots)):
         total_influence = 0
         for user in range(len(population)):
-            if (
-                max(population[user][1], slots[slot][1])
-                < min(population[user][2], slots[slot][2])
-                and population[user][0] == billboards[slots[slot][0]][0]
-            ):
+            if max(population[user][1], slots[slot][1]) < min(
+                population[user][2], slots[slot][2]
+            ) and population[user][0]==billboards[slots[slot][0]][0]:
                 influence = random.random()
-                raw_influences_file.write(f"{influence:.4f}\n")
                 total_influence += influence
-            else:
-                raw_influences_file.write("0\n")
         cost = billboards[slots[slot][0]][1]
         influences_table.append([format(total_influence, ".4f"), tag, slot, cost])
-        influences_file.write(f"{total_influence:.4f}\n")
+        influences_file.write(f"{total_influence}\n")
 pd.DataFrame(
     influences_table, columns=["influence", "tag", "slot", "cost"]
 ).rename_axis(index="id").to_csv("influence_table.csv")

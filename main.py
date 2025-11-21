@@ -5,13 +5,14 @@ NUM_TEST_CASES = 100
 
 # heuristics to test
 # first heuristic is set as control
-heuristics = ["brute", "greedy", "greedy_cost", "greedy_influence_cost_ratio", "dp"]
+heuristics = ["brute", "greedy", "greedy_cost", "greedy_influence_cost_ratio", "dp", "genetic"]
 titles = [
     "Brute-force",
     "Greedy (Influence)",
     "Greedy (Cost)",
     "Greedy (Influence/Cost)",
     "DP",
+    "Genetic (100 population, 250 generations, Default Config)",
 ]
 
 results = {}

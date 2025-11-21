@@ -5,10 +5,13 @@ import random
 import sys
 import json
 
-TESTS = int(sys.argv[3])
-POPULATION_SIZE = int(sys.argv[1])
-GENERATIONS = int(sys.argv[2])
-test_data_set = "test_data_big"
+# TESTS = int(sys.argv[3])
+# POPULATION_SIZE = int(sys.argv[1])
+# GENERATIONS = int(sys.argv[2])
+TESTS = 1
+POPULATION_SIZE = 100
+GENERATIONS = 250
+test_data_set = "tag-allocation"
 
 with open("genetic_params.json", "r") as settings_file:
     settings = json.load(settings_file)
@@ -195,11 +198,16 @@ initial_populations = [[
 output_summary = open("output_B_summary.csv", "w")
 output_summary.write("index,test_no,test_name,max,avg,min,stdev\n")
 
+total_cost = 0;
+total_influence = 0;
+
 for config_i in range(len(settings)):
+    if not settings[config_i]["test?"]:
+        continue
     print(f"current config: {settings[config_i]["name"]}")
     for test_i in range(TESTS):
         working_population = initial_populations[config_i][test_i]
-        output_file = open("output_B_"+settings[config_i]["name"]+"_"+sys.argv[1]+"_"+sys.argv[2]+"_"+str(test_i)+".csv", "w")
+        output_file = open("output_B_"+settings[config_i]["name"]+"_"+str(POPULATION_SIZE)+"_"+str(GENERATIONS)+"_"+str(test_i)+".csv", "w")
         # output_file = open("test_output.txt", "w")
         output_file.write("generation,max,avg,min,stdev\n")
         # for i in settings:
@@ -368,13 +376,13 @@ for config_i in range(len(settings)):
 
         working_population.sort(sortByFitness, True)
 
-        print(f"=== POPULATION AFTER {GENERATIONS} GENERATIONS ===")
-        for i in range(working_population.population_size):
-            print(working_population[i])
-        print(working_population)
+        # print(f"=== POPULATION AFTER {GENERATIONS} GENERATIONS ===")
+        # for i in range(working_population.population_size):
+        #     print(working_population[i])
+        # print(working_population)
 
-        print("=== POPULATION HISTORY ===")
-        working_population.print_history()
+        # print("=== POPULATION HISTORY ===")
+        # working_population.print_history()
 
         # print("=== RWS WINS ===")
         # for i in range(len(RWS_wins)):
@@ -387,4 +395,8 @@ for config_i in range(len(settings)):
         output_file.close()
         last_gen_info = working_population.info_dict
         output_summary.write(f"{config_i+test_i},\"{settings[config_i]["name"]}\",{test_i},{last_gen_info["max_fitness"]},{last_gen_info["avg_fitness"]},{last_gen_info["min_fitness"]},{last_gen_info["stdev_fitness"]}\n")
+
+        # comparisons 
+        total_cost = working_population[0].cost
+        total_influence = working_population[0].fitness
 output_summary.close()

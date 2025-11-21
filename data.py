@@ -1,26 +1,27 @@
+import math
 import random
 import string
 import pandas as pd
 import csv
 
-BILLBOARD_CNT = 2
+BILLBOARD_CNT = 20
 LOCATION_NAME_LEN = 5
 MIN_COST = 5
 MAX_COST = 10
 
-MIN_POPULATION_CNT = 20
-MAX_POPULATION_CNT = 60
-MAX_TIMESTAMP = 15
+MIN_POPULATION_CNT = 250
+MAX_POPULATION_CNT = 250
+MAX_TIMESTAMP = 24*7
 
-MIN_SLOT_CNT = 2
-MAX_SLOT_CNT = 2
+MIN_SLOT_CNT = 5
+MAX_SLOT_CNT = 5
 MAX_INITIAL_SLOT_TIME = 0
 MAX_SLOT_DURATION = 3
 
-MIN_TAG_CNT = 2
-MAX_TAG_CNT = 3
+MIN_TAG_CNT = 15
+MAX_TAG_CNT = 15
 
-BUDGET = 15
+BUDGET = 100
 
 
 # billboard database
@@ -52,10 +53,10 @@ pd.DataFrame(population, columns=["location", "start", "stop"]).rename_axis(
 # slots database
 slots = []
 for billboard in range(BILLBOARD_CNT):
-    slot_cnt = random.randint(MIN_SLOT_CNT, MAX_SLOT_CNT)
     initial = random.randint(0, MAX_INITIAL_SLOT_TIME)
     duration = random.randint(1, MAX_SLOT_DURATION)
-    for slot in range(slot_cnt):
+    slot_cnt = MAX_TIMESTAMP / (duration + 1)
+    for slot in range(math.floor(slot_cnt)):
         slots.append([billboard, initial, initial + duration])
         initial += duration + 1
 pd.DataFrame(slots, columns=["billboard", "start", "stop"]).rename_axis(

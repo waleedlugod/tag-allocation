@@ -23,21 +23,24 @@ width = 0.35
 plt.figure()
 plt.bar(x - width, performances, width, color="green")
 plt.bar(x, avg_approx_ratios, width, color="orange")
-plt.xticks(x, ["Greedy (Influence)", "Greedy (Cost)", "Greedy (Influence/Cost)"])
+plt.bar(x + width, avg_costs, width, color="red")
+plt.xticks(
+    x + width / 3, ["Greedy (Influence)", "Greedy (Cost)", "Greedy (Influence/Cost)"]
+)
 plt.xlabel("Heuristics")
 plt.ylabel("Percent")
 plt.legend(["Performance", "Avg Approximation Ratio"])
 plt.title("Correctness and Approximation Ratios of Greedys")
 
 # average costs
-plt.figure()
-plt.bar(x, avg_costs, width, color="orange")
-plt.xticks(x, ["Greedy (Influence)", "Greedy (Cost)", "Greedy (Influence/Cost)"])
-plt.xlabel("Heuristics")
-plt.ylabel("Avg Cost")
-plt.title("Average Costs of Greedys")
-axes = plt.gca()
-axes.set_ylim([0, brute_avg_cost])
+# plt.figure()
+# plt.bar(x, avg_costs, width, color="orange")
+# plt.xticks(x, ["Greedy (Influence)", "Greedy (Cost)", "Greedy (Influence/Cost)"])
+# plt.xlabel("Heuristics")
+# plt.ylabel("Avg Cost")
+# plt.title("Average Costs of Greedys")
+# axes = plt.gca()
+# axes.set_ylim([0, brute_avg_cost])
 
 # influence distribution
 # note: graph is right skewed as not all users contribute to the final influence value (i.e. 0 value)

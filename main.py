@@ -5,15 +5,25 @@ NUM_TEST_CASES = 100
 
 # heuristics to test
 # first heuristic is set as control
-heuristics = ["brute", "greedy", "greedy_cost", "greedy_influence_cost_ratio", "dp", "genetic"]
+heuristics = [
+    # "brute",
+    "dp",
+    "greedy",
+    "greedy_cost",
+    "greedy_influence_cost_ratio",
+    "genetic",
+]
 titles = [
-    "Brute-force",
+    # "Brute-force",
+    "DP",
     "Greedy (Influence)",
     "Greedy (Cost)",
     "Greedy (Influence/Cost)",
-    "DP",
     "Genetic (100 population, 250 generations, Default Config)",
 ]
+
+influences_all = open("influences_all.txt", "w")
+raw_influences_all = open("raw_influences_all.txt", "w")
 
 results = {}
 for i in range(len(heuristics)):
@@ -26,7 +36,10 @@ for i in range(len(heuristics)):
 
 h = [None] * len(heuristics)
 for test in range(NUM_TEST_CASES):
-    importlib.reload(importlib.import_module("data"))
+    data = importlib.import_module("data")
+    influences_all.write(open("influences.txt").read())
+    raw_influences_all.write(open("raw_influences.txt").read())
+    importlib.reload(data)
 
     for _ in range(len(heuristics)):
         h[_] = importlib.import_module(heuristics[_])

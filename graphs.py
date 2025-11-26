@@ -9,27 +9,29 @@ performances = []
 avg_approx_ratios = []
 avg_costs = []
 
-brute_avg_cost = float(output.readline().split(" ")[-1])
-for _ in range(HEURISTICS_CNT - 1):
+for _ in range(HEURISTICS_CNT):
     performances.append(float(output.readline().split(" ")[-1]))
     avg_approx_ratios.append(float(output.readline().split(" ")[-1]))
     avg_costs.append(float(output.readline().split(" ")[-1]))
 
-
-x = np.arange(HEURISTICS_CNT - 1)
-width = 0.35
+x = np.arange(HEURISTICS_CNT)
+width = 0.2
 
 # performance and approximation ratio
-plt.figure()
+plt.figure(figsize=(8, 8))
 plt.bar(x - width, performances, width, color="green")
 plt.bar(x, avg_approx_ratios, width, color="orange")
 plt.bar(x + width, avg_costs, width, color="red")
 plt.xticks(
-    x + width / 3, ["Greedy (Influence)", "Greedy (Cost)", "Greedy (Influence/Cost)"]
+    x,
+    ["Greedy (Influence)", "Greedy (Cost)", "Greedy (Influence/Cost)", "Genetic"],
 )
 plt.xlabel("Heuristics")
-plt.ylabel("Percent")
-plt.legend(["Performance", "Avg Approximation Ratio"])
+plt.ylabel("Ratio to Optimal")
+plt.legend(
+    ["Performance", "Avg Approximation Ratio", "Avg Cost Approximation Ratio"],
+    loc="lower right",
+)
 plt.title("Correctness and Approximation Ratios of Greedys")
 
 # average costs

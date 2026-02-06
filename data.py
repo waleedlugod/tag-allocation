@@ -14,8 +14,7 @@ MAX_POPULATION_CNT = 100
 MIN_SLOTS_VISITED = 10
 MAX_SLOTS_VISITED = 30
 
-MIN_SLOT_CNT = 20
-MAX_SLOT_CNT = 20
+SLOT_CNT = 20
 MAX_INITIAL_SLOT_TIME = 0
 MAX_SLOT_DURATION = 10
 
@@ -34,8 +33,7 @@ def data(
     max_population_count=MAX_POPULATION_CNT,
     min_slots_visisted=MIN_SLOTS_VISITED,
     max_slots_visited=MAX_SLOTS_VISITED,
-    min_slot_count=MIN_SLOT_CNT,
-    max_slot_count=MAX_SLOT_CNT,
+    slot_count=SLOT_CNT,
     max_initial_slot_time=MAX_INITIAL_SLOT_TIME,
     max_slot_duration=MAX_SLOT_DURATION,
     min_tag_count=MIN_TAG_CNT,
@@ -61,8 +59,7 @@ def data(
     for billboard in range(BILLBOARD_CNT):
         initial = random.randint(0, MAX_INITIAL_SLOT_TIME)
         duration = random.randint(1, MAX_SLOT_DURATION)
-        slot_cnt = random.randint(MIN_SLOT_CNT, MAX_SLOT_CNT)
-        for slot in range(math.floor(slot_cnt)):
+        for slot in range(math.floor(slot_count)):
             slots.append([billboard, initial, initial + duration])
             initial += duration + 1
     pd.DataFrame(slots, columns=["billboard", "start", "stop"]).rename_axis(

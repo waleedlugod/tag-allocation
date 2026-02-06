@@ -4,9 +4,9 @@ import pandas as pd
 
 settings = pd.read_csv("settings.csv").to_numpy()[0]
 NUM_TEST_CASES = settings[0]
-start = settings[1]
-step = settings[2]
-steps = settings[3]
+slots_start = settings[1]
+slots_step = settings[2]
+slots_steps = settings[3]
 
 # heuristics to test
 # first heuristic is set as control
@@ -40,33 +40,38 @@ for i in range(len(heuristics)):
         results[heuristics[i]]["agg_approx_cost"] = 0
 
 h = [None] * len(heuristics)
-for test in range(NUM_TEST_CASES):
-    data = importlib.import_module("data")
-    influences_all.write(open("influences.txt").read())
-    raw_influences_all.write(open("raw_influences.txt").read())
-    data.data()
+for s in range(slots_steps):
+    slot_count = slots_start + slots_step * s
+    print("Slots:", slot_count)
+    for test in range(NUM_TEST_CASES):
+        data = importlib.import_module("data")
+        influences_all.write(open("influences.txt").read())
+        raw_influences_all.write(open("raw_influences.txt").read())
+        data.data(slot_count=slot_count)
 
-    for i in range(len(heuristics)):
-        h[i] = importlib.import_module(heuristics[i])
-        importlib.reload(h[i])
-        print(
-            "computation time: " + str(h[i].end_time - h[i].start_time) + " seconds",
-            titles[i],
-        )
+        for i in range(len(heuristics)):
+            h[i] = importlib.import_module(heuristics[i])
+            importlib.reload(h[i])
+            print(
+                "computation time: "
+                + str(h[i].end_time - h[i].start_time)
+                + " seconds",
+                titles[i],
+            )
 
-    for i in range(1, len(heuristics)):
-        results[heuristics[i]]["agg_approx_cost"] += (
-            h[i].total_cost / h[0].total_cost
-            if not math.isclose(0, h[0].total_cost, rel_tol=1e-6)
-            else 1
-        )
-        results[heuristics[i]]["agg_approx_ratio"] += (
-            h[i].total_influence / h[0].total_influence
-            if not math.isclose(0, h[0].total_influence, rel_tol=1e-6)
-            else 1
-        )
-        if math.isclose(h[0].total_influence, h[i].total_influence, rel_tol=1e-6):
-            results[heuristics[i]]["correct_cnt"] += 1
+        for i in range(1, len(heuristics)):
+            results[heuristics[i]]["agg_approx_cost"] += (
+                h[i].total_cost / h[0].total_cost
+                if not math.isclose(0, h[0].total_cost, rel_tol=1e-6)
+                else 1
+            )
+            results[heuristics[i]]["agg_approx_ratio"] += (
+                h[i].total_influence / h[0].total_influence
+                if not math.isclose(0, h[0].total_influence, rel_tol=1e-6)
+                else 1
+            )
+            if math.isclose(h[0].total_influence, h[i].total_influence, rel_tol=1e-6):
+                results[heuristics[i]]["correct_cnt"] += 1
 
 
 for i in range(1, len(h)):

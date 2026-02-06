@@ -4,6 +4,7 @@ import pandas as pd
 import random
 import sys
 import json
+import time
 
 # TESTS = int(sys.argv[3])
 # POPULATION_SIZE = int(sys.argv[1])
@@ -191,6 +192,8 @@ class Population:
 
 # === === === GENERATION STAGE === === ===
 
+start_time = time.time()
+
 population_size = POPULATION_SIZE
 tags = [-1] + [i for i in range(tags_cnt)]
 # heavily weight on no allocation as to not overload budget
@@ -205,10 +208,10 @@ weights = [(average_slot_cost / budget) * (slots_cnt * tags_cnt - tags_cnt)] + [
 
 population = Population(population_size)
 
-print("=== INITIAL POPULATION ===")
-for i in range(population_size):
-    print(population[i])
-print(population)
+# print("=== INITIAL POPULATION ===")
+# for i in range(population_size):
+#     print(population[i])
+# print(population)
 
 initial_populations = [
     [
@@ -233,7 +236,7 @@ total_influence = 0
 for config_i in range(len(settings)):
     if not settings[config_i]["test?"]:
         continue
-    print(f"current config: {settings[config_i]['name']}")
+    # print(f"current config: {settings[config_i]['name']}")
     for test_i in range(TESTS):
         working_population = initial_populations[config_i][test_i]
         output_file = open(
@@ -441,11 +444,13 @@ for config_i in range(len(settings)):
 
         output_file.close()
         last_gen_info = working_population.info_dict
-        output_summary.write(
-            f"{config_i+test_i},\"{settings[config_i]['name']}\",{test_i},{last_gen_info['max_fitness']},{last_gen_info['avg_fitness']},{last_gen_info['min_fitness']},{last_gen_info['stdev_fitness']}\n"
-        )
+        # output_summary.write(
+        #     f"{config_i+test_i},\"{settings[config_i]['name']}\",{test_i},{last_gen_info['max_fitness']},{last_gen_info['avg_fitness']},{last_gen_info['min_fitness']},{last_gen_info['stdev_fitness']}\n"
+        # )
 
         # comparisons
         total_cost = working_population[0].cost
         total_influence = working_population[0].fitness
 output_summary.close()
+
+end_time = time.time()

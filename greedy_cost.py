@@ -1,4 +1,5 @@
 import pandas as pd
+import time
 
 billboards_df = pd.read_csv("billboards.csv")
 population_df = pd.read_csv("population.csv")
@@ -21,6 +22,7 @@ billboards = billboards_df.to_numpy()
 slots = slots_df.to_numpy()
 influence_table = influence_table_df.to_numpy()
 
+start_time = time.time()
 
 i = 0
 while allocated_slots_cnt < len(Q) and i < len(influence_table) and total_cost < BUDGET:
@@ -40,11 +42,13 @@ while allocated_slots_cnt < len(Q) and i < len(influence_table) and total_cost <
         total_influence += influence[1]
     i += 1
 
-print(
-    Q,
-    {
-        "total influence": format(total_influence, ".4f"),
-        "total cost": total_cost,
-        "MAX COST": format(BUDGET, ".0f"),
-    },
-)
+end_time = time.time()
+
+# print(
+#     Q,
+#     {
+#         "total influence": format(total_influence, ".4f"),
+#         "total cost": total_cost,
+#         "MAX COST": format(BUDGET, ".0f"),
+#     },
+# )

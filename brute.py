@@ -1,4 +1,5 @@
 import random
+import time
 from copy import copy
 
 import pandas as pd
@@ -14,6 +15,8 @@ meta_df = pd.read_csv("meta.csv")
 billboards = billboards_df.to_numpy()
 slots = slots_df.to_numpy()
 influence_table = influence_table_df.to_numpy()
+
+start_time = time.time()
 
 total_cost = 0
 for slot in slots:
@@ -80,6 +83,8 @@ def brute(idx, cost):
 
 
 brute(0, 0)
+
+end_time = time.time()
 
 print(
     Q,

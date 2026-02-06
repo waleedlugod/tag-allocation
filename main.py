@@ -1,7 +1,12 @@
 import importlib
 import math
+import pandas as pd
 
-NUM_TEST_CASES = 100
+settings = pd.read_csv("settings.csv").to_numpy()[0]
+NUM_TEST_CASES = settings[0]
+start = settings[1]
+step = settings[2]
+steps = settings[3]
 
 # heuristics to test
 # first heuristic is set as control
@@ -39,11 +44,15 @@ for test in range(NUM_TEST_CASES):
     data = importlib.import_module("data")
     influences_all.write(open("influences.txt").read())
     raw_influences_all.write(open("raw_influences.txt").read())
-    importlib.reload(data)
+    data.data()
 
-    for _ in range(len(heuristics)):
-        h[_] = importlib.import_module(heuristics[_])
-        importlib.reload(h[_])
+    for i in range(len(heuristics)):
+        h[i] = importlib.import_module(heuristics[i])
+        importlib.reload(h[i])
+        print(
+            "computation time: " + str(h[i].end_time - h[i].start_time) + " seconds",
+            titles[i],
+        )
 
     for i in range(1, len(heuristics)):
         results[heuristics[i]]["agg_approx_cost"] += (
@@ -58,6 +67,7 @@ for test in range(NUM_TEST_CASES):
         )
         if math.isclose(h[0].total_influence, h[i].total_influence, rel_tol=1e-6):
             results[heuristics[i]]["correct_cnt"] += 1
+
 
 for i in range(1, len(h)):
     results[heuristics[i]]["avg_approx_cost"] = (

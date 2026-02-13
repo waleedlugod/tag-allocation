@@ -29,6 +29,7 @@ titles = [
 
 influences_all = open("influences_all.txt", "w")
 raw_influences_all = open("raw_influences_all.txt", "w")
+comp_time = open("computation_time.txt", "w")
 
 results = {}
 for i in range(len(heuristics)):
@@ -42,7 +43,7 @@ for i in range(len(heuristics)):
 h = [None] * len(heuristics)
 for s in range(slots_steps):
     slot_count = slots_start + slots_step * s
-    print("Slots:", slot_count)
+    comp_time.write("Slots: " + str(slot_count) + "\n")
     for test in range(NUM_TEST_CASES):
         data = importlib.import_module("data")
         influences_all.write(open("influences.txt").read())
@@ -52,11 +53,8 @@ for s in range(slots_steps):
         for i in range(len(heuristics)):
             h[i] = importlib.import_module(heuristics[i])
             importlib.reload(h[i])
-            print(
-                "computation time: "
-                + str(h[i].end_time - h[i].start_time)
-                + " seconds",
-                titles[i],
+            comp_time.write(
+                f"computation time: {str(h[i].end_time - h[i].start_time)} seconds {titles[i]}\n"
             )
 
         for i in range(1, len(heuristics)):

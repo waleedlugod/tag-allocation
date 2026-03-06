@@ -1,18 +1,51 @@
 import matplotlib.pyplot as plt
 import numpy as np
+import pandas as pd
 
 output = open("output.txt", "r")
 
 HEURISTICS_CNT = 4
 
+settings = pd.read_csv("settings.csv").to_numpy()[0]
+(
+    NUM_TEST_CASES,
+    slots_start,
+    slots_step,
+    slots_steps,
+    budget_start,
+    budget_step,
+    budget_steps,
+) = settings
 performances = []
 avg_approx_ratios = []
 avg_costs = []
+comp_times = []
 
+# read metrics
 for _ in range(HEURISTICS_CNT):
     performances.append(float(output.readline().split(" ")[-1]))
     avg_approx_ratios.append(float(output.readline().split(" ")[-1]))
     avg_costs.append(float(output.readline().split(" ")[-1]))
+
+# read computation times
+for s in range(slots_steps):
+    for b in range(budget_steps):
+        inputs = output.readline().strip().split(",")
+        slots = inputs[0].split(" ")[-1]
+        budget = inputs[1].split(" ")[-1]
+        for h in range(HEURISTICS_CNT + 1):
+            line = output.readline().strip().split(" ")
+            comp_time = line[2]
+            heuristic_title = " ".join(line[4:])
+            comp_times.append(
+                {
+                    "slots": slots,
+                    "budget": budget,
+                    "comp_time": comp_time,
+                    "title": heuristic_title,
+                }
+            )
+print(comp_times)
 
 x = np.arange(HEURISTICS_CNT)
 width = 0.2

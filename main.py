@@ -3,13 +3,15 @@ import math
 import pandas as pd
 
 settings = pd.read_csv("settings.csv").to_numpy()[0]
-NUM_TEST_CASES = settings[0]
-slots_start = settings[1]
-slots_step = settings[2]
-slots_steps = settings[3]
-budget_start = settings[4]
-budget_step = settings[5]
-budget_steps = settings[6]
+(
+    NUM_TEST_CASES,
+    slots_start,
+    slots_step,
+    slots_steps,
+    budget_start,
+    budget_step,
+    budget_steps,
+) = settings
 
 # heuristics to test
 # first heuristic is set as control

@@ -6,8 +6,8 @@ import csv
 
 BILLBOARD_CNT = 10
 LOCATION_NAME_LEN = 5
-MIN_COST = 10
-MAX_COST = 100
+MIN_COST = 10000
+MAX_COST = 100000
 
 MIN_POPULATION_CNT = 100
 MAX_POPULATION_CNT = 100
@@ -111,4 +111,4 @@ def data(
     with open("meta.csv", "w") as metafile:
         metawriter = csv.writer(metafile)
         metawriter.writerow(["tag count", "budget"])
-        metawriter.writerow([tag_cnt, BUDGET])
+        metawriter.writerow([tag_cnt, budget])

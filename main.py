@@ -7,6 +7,9 @@ NUM_TEST_CASES = settings[0]
 slots_start = settings[1]
 slots_step = settings[2]
 slots_steps = settings[3]
+budget_start = settings[4]
+budget_step = settings[5]
+budget_steps = settings[6]
 
 # heuristics to test
 # first heuristic is set as control
@@ -29,7 +32,7 @@ titles = [
 
 influences_all = open("influences_all.txt", "w")
 raw_influences_all = open("raw_influences_all.txt", "w")
-comp_time = open("computation_time.txt", "w")
+comp_time = ""
 
 results = {}
 for i in range(len(heuristics)):
@@ -41,35 +44,38 @@ for i in range(len(heuristics)):
         results[heuristics[i]]["agg_approx_cost"] = 0
 
 h = [None] * len(heuristics)
-for s in range(slots_steps):
-    slot_count = slots_start + slots_step * s
-    comp_time.write("Slots: " + str(slot_count) + "\n")
-    for test in range(NUM_TEST_CASES):
-        data = importlib.import_module("data")
-        influences_all.write(open("influences.txt").read())
-        raw_influences_all.write(open("raw_influences.txt").read())
-        data.data(slot_count=slot_count)
+for b in range(budget_steps):
+    for s in range(slots_steps):
+        slot_count = slots_start + slots_step * s
+        budget = budget_start + budget_step * b
+        comp_time += f"Slots: {str(slot_count)}, Budget: {budget}\n"
+        for test in range(NUM_TEST_CASES):
+            data = importlib.import_module("data")
+            influences_all.write(open("influences.txt").read())
+            raw_influences_all.write(open("raw_influences.txt").read())
+            data.data(slot_count=slot_count, budget=budget)
 
-        for i in range(len(heuristics)):
-            h[i] = importlib.import_module(heuristics[i])
-            importlib.reload(h[i])
-            comp_time.write(
-                f"computation time: {str(h[i].end_time - h[i].start_time)} seconds {titles[i]}\n"
-            )
+            for i in range(len(heuristics)):
+                print(titles[i])
+                h[i] = importlib.import_module(heuristics[i])
+                importlib.reload(h[i])
+                comp_time += f"computation time: {str(h[i].end_time - h[i].start_time)} seconds {titles[i]}\n"
 
-        for i in range(1, len(heuristics)):
-            results[heuristics[i]]["agg_approx_cost"] += (
-                h[i].total_cost / h[0].total_cost
-                if not math.isclose(0, h[0].total_cost, rel_tol=1e-6)
-                else 1
-            )
-            results[heuristics[i]]["agg_approx_ratio"] += (
-                h[i].total_influence / h[0].total_influence
-                if not math.isclose(0, h[0].total_influence, rel_tol=1e-6)
-                else 1
-            )
-            if math.isclose(h[0].total_influence, h[i].total_influence, rel_tol=1e-6):
-                results[heuristics[i]]["correct_cnt"] += 1
+            for i in range(1, len(heuristics)):
+                results[heuristics[i]]["agg_approx_cost"] += (
+                    h[i].total_cost / h[0].total_cost
+                    if not math.isclose(0, h[0].total_cost, rel_tol=1e-6)
+                    else 1
+                )
+                results[heuristics[i]]["agg_approx_ratio"] += (
+                    h[i].total_influence / h[0].total_influence
+                    if not math.isclose(0, h[0].total_influence, rel_tol=1e-6)
+                    else 1
+                )
+                if math.isclose(
+                    h[0].total_influence, h[i].total_influence, rel_tol=1e-6
+                ):
+                    results[heuristics[i]]["correct_cnt"] += 1
 
 
 for i in range(1, len(h)):
@@ -94,3 +100,4 @@ with open("output.txt", "w") as f:
         f.write(
             f"{results[heuristics[i]]['title']} Average Cost Approximation Ratio: {results[heuristics[i]]['avg_approx_cost']:.2f}\n"
         )
+    f.write(comp_time)

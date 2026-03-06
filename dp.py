@@ -1,6 +1,8 @@
 import pandas as pd
 import time
 
+start_time = time.time()
+
 billboards = pd.read_csv("billboards.csv").to_numpy()
 slots = pd.read_csv("slots.csv").to_numpy()
 influence_table = pd.read_csv("influence_table.csv").to_numpy()
@@ -10,7 +12,6 @@ BUDGET = meta[0][1]
 
 tag_count = meta[0][0]
 
-start_time = time.time()
 
 memo = [
     [

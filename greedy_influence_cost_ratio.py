@@ -1,6 +1,8 @@
 import pandas as pd
 import time
 
+start_time = time.time()
+
 billboards_df = pd.read_csv("billboards.csv")
 population_df = pd.read_csv("population.csv")
 slots_df = pd.read_csv("slots.csv")
@@ -20,18 +22,14 @@ for index, row in influence_table_df.iterrows():
     )
 
 
-influence_table_df = influence_table_df.sort_values(
-    ["influence cost ratio"], ascending=False
-)
-
-
 total_cost = 0
 total_influence = 0
 billboards = billboards_df.to_numpy()
 slots = slots_df.to_numpy()
-influence_table = influence_table_df.to_numpy()
 
-start_time = time.time()
+influence_table = influence_table_df.sort_values(
+    ["influence cost ratio"], ascending=False
+).to_numpy()
 
 i = 0
 while allocated_slots_cnt < len(Q) and i < len(influence_table) and total_cost < BUDGET:

@@ -46,39 +46,44 @@ for i in range(len(heuristics)):
         results[heuristics[i]]["agg_approx_cost"] = 0
 
 h = [None] * len(heuristics)
+
+
+def compute(slot_count=slots_start, budget=budget_start):
+    global comp_time
+    comp_time += f"Slots: {str(slot_count)}, Budget: {budget}\n"
+    for test in range(NUM_TEST_CASES):
+        data = importlib.import_module("data")
+        influences_all.write(open("influences.txt").read())
+        raw_influences_all.write(open("raw_influences.txt").read())
+        data.data(slot_count=slot_count, budget=budget)
+
+        for i in range(len(heuristics)):
+            print(titles[i])
+            h[i] = importlib.import_module(heuristics[i])
+            importlib.reload(h[i])
+            comp_time += f"computation time: {str(h[i].end_time - h[i].start_time)} seconds {titles[i]}\n"
+
+        for i in range(1, len(heuristics)):
+            results[heuristics[i]]["agg_approx_cost"] += (
+                h[i].total_cost / h[0].total_cost
+                if not math.isclose(0, h[0].total_cost, rel_tol=1e-6)
+                else 1
+            )
+            results[heuristics[i]]["agg_approx_ratio"] += (
+                h[i].total_influence / h[0].total_influence
+                if not math.isclose(0, h[0].total_influence, rel_tol=1e-6)
+                else 1
+            )
+            if math.isclose(h[0].total_influence, h[i].total_influence, rel_tol=1e-6):
+                results[heuristics[i]]["correct_cnt"] += 1
+
+
 for b in range(budget_steps):
-    for s in range(slots_steps):
-        slot_count = slots_start + slots_step * s
-        budget = budget_start + budget_step * b
-        comp_time += f"Slots: {str(slot_count)}, Budget: {budget}\n"
-        for test in range(NUM_TEST_CASES):
-            data = importlib.import_module("data")
-            influences_all.write(open("influences.txt").read())
-            raw_influences_all.write(open("raw_influences.txt").read())
-            data.data(slot_count=slot_count, budget=budget)
-
-            for i in range(len(heuristics)):
-                print(titles[i])
-                h[i] = importlib.import_module(heuristics[i])
-                importlib.reload(h[i])
-                comp_time += f"computation time: {str(h[i].end_time - h[i].start_time)} seconds {titles[i]}\n"
-
-            for i in range(1, len(heuristics)):
-                results[heuristics[i]]["agg_approx_cost"] += (
-                    h[i].total_cost / h[0].total_cost
-                    if not math.isclose(0, h[0].total_cost, rel_tol=1e-6)
-                    else 1
-                )
-                results[heuristics[i]]["agg_approx_ratio"] += (
-                    h[i].total_influence / h[0].total_influence
-                    if not math.isclose(0, h[0].total_influence, rel_tol=1e-6)
-                    else 1
-                )
-                if math.isclose(
-                    h[0].total_influence, h[i].total_influence, rel_tol=1e-6
-                ):
-                    results[heuristics[i]]["correct_cnt"] += 1
-
+    budget = budget_start + budget_step * b
+    compute(budget=budget)
+for s in range(1, slots_steps):
+    slot_count = slots_start + slots_step * s
+    compute(slot_count=slot_count)
 
 for i in range(1, len(h)):
     results[heuristics[i]]["avg_approx_cost"] = (

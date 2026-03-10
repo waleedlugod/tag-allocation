@@ -12,6 +12,7 @@ TESTS = 1
 POPULATION_SIZE = 100
 GENERATIONS = 250
 test_data_set = "tag-allocation"
+test_output = "penalty_tests"
 
 with open("genetic_params.json", "r") as settings_file:
     settings = json.load(settings_file)
@@ -90,9 +91,13 @@ class Individual:
             self.fitness += influence_table[
                 self.alloc[assigned_tag_index] * self.num_slots + assigned_tag_index
             ][1].item()
-            if self.cost > budget:
-                self.fitness = -1
-                break
+            # this penalizes overbudget individuals by setting fitness to -1
+            # if self.cost > budget:
+            #     self.fitness = -1
+            #     break
+        if self.cost > budget:
+            self.fitness *= 1 - ((self.cost - budget) / budget)
+            
 
 
 class Population:
@@ -224,7 +229,7 @@ initial_populations = [
     for _ in range(len(settings))
 ]
 
-output_summary = open("output_B_summary.csv", "w")
+output_summary = open("./"+test_output+"/B_summary.csv", "w")
 output_summary.write("index,test_no,test_name,max,avg,min,stdev\n")
 
 total_cost = 0
@@ -237,7 +242,7 @@ for config_i in range(len(settings)):
     for test_i in range(TESTS):
         working_population = initial_populations[config_i][test_i]
         output_file = open(
-            "output_B_"
+            "./"+test_output+"/B_"
             + settings[config_i]["name"]
             + "_"
             + str(POPULATION_SIZE)
@@ -428,8 +433,8 @@ for config_i in range(len(settings)):
         #     print(working_population[i])
         # print(working_population)
 
-        # print("=== POPULATION HISTORY ===")
-        # working_population.print_history()
+        print("=== POPULATION HISTORY ===")
+        working_population.print_history()
 
         # print("=== RWS WINS ===")
         # for i in range(len(RWS_wins)):

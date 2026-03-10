@@ -11,6 +11,7 @@ heuristics = [
     "greedy",
     "greedy_cost",
     "greedy_influence_cost_ratio",
+    "greedy_influence_cost_slot_ratio",
     "genetic",
 ]
 titles = [
@@ -19,6 +20,7 @@ titles = [
     "Greedy (Influence)",
     "Greedy (Cost)",
     "Greedy (Influence/Cost)",
+    "Greedy (Influence/Cost * Slots)",
     "Genetic (100 population, 250 generations, Default Config)",
 ]
 

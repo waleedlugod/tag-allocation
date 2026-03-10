@@ -87,7 +87,7 @@ for tag in range(tag_cnt):
                 raw_influences_file.write(f"{influence}\n")
                 total_influence += influence
         cost = billboards[slots[slot][0]][1]
-        influences_table.append([format(total_influence, ".4f"), tag, slot, cost])
+        influences_table.append([total_influence, tag, slot, cost])
         influences_file.write(f"{total_influence}\n")
 pd.DataFrame(
     influences_table, columns=["influence", "tag", "slot", "cost"]

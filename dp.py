@@ -1,4 +1,7 @@
 import pandas as pd
+import time
+
+start_time = time.time()
 
 billboards = pd.read_csv("billboards.csv").to_numpy()
 slots = pd.read_csv("slots.csv").to_numpy()
@@ -8,6 +11,7 @@ meta = pd.read_csv("meta.csv").to_numpy()
 BUDGET = meta[0][1]
 
 tag_count = meta[0][0]
+
 
 memo = [
     [
@@ -69,11 +73,13 @@ while idx > -1:
 
 total_influence = memo[-1][-1]["profit"]
 
-print(
-    Q,
-    {
-        "total influence": format(memo[-1][-1]["profit"], ".4f"),
-        "total cost": total_cost,
-        "BUDGET": format(BUDGET, ".0f"),
-    },
-)
+end_time = time.time()
+
+# print(
+#     Q,
+#     {
+#         "total influence": format(memo[-1][-1]["profit"], ".4f"),
+#         "total cost": total_cost,
+#         "BUDGET": format(BUDGET, ".0f"),
+#     },
+# )

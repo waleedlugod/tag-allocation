@@ -70,7 +70,7 @@ def compute(slot_count=slots_start, budget=budget_start, tag_count=tag_start):
     global h
     global best_greedy_results
 
-    comp_time += f"Slots: {str(slot_count)}, Budget: {budget}\n"
+    comp_time += f"Slots: {str(slot_count)}, Budget: {budget}, Tags: {str(tag_count)}\n"
     for test in range(NUM_TEST_CASES):
         data = importlib.import_module("data")
         influences_all.write(open("influences.txt").read())

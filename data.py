@@ -17,8 +17,7 @@ def data(
     slot_count=20,
     max_initial_slot_time=0,
     max_slot_duration=10,
-    min_tag_count=20,
-    max_tag_count=20,
+    tag_count=20,
     budget=1000,
 ):
     if min_cost > budget:
@@ -72,11 +71,10 @@ def data(
 
     # influence table
     # 0 if slot timestamp does not agree with user timestamp
-    tag_cnt = random.randint(min_tag_count, max_tag_count)
     influences_table = []
     influences_file = open("influences.txt", "w")
     raw_influences_file = open("raw_influences.txt", "w")
-    for tag in range(tag_cnt):
+    for tag in range(tag_count):
         for slot in range(len(slots)):
             total_influence = 0
             for user in range(len(population)):
@@ -99,4 +97,4 @@ def data(
     with open("meta.csv", "w") as metafile:
         metawriter = csv.writer(metafile)
         metawriter.writerow(["tag count", "budget"])
-        metawriter.writerow([tag_cnt, budget])
+        metawriter.writerow([tag_count, budget])

@@ -13,6 +13,9 @@ settings = pd.read_csv("settings.csv").to_numpy()[0]
     budget_start,
     budget_step,
     budget_steps,
+    tag_start,
+    tag_step,
+    tag_steps,
 ) = settings
 
 # heuristics to test
@@ -57,7 +60,7 @@ for i in range(len(heuristics)):
 h = [None] * len(heuristics)
 
 
-def compute(slot_count=slots_start, budget=budget_start):
+def compute(slot_count=slots_start, budget=budget_start, tag_count=tag_start):
     global comp_time
     global influences_all
     global raw_influences_all
@@ -129,6 +132,10 @@ for b in range(budget_steps):
 for s in range(1, slots_steps):
     slot_count = slots_start + slots_step * s
     compute(slot_count=slot_count)
+    total_cases += NUM_TEST_CASES
+for t in range(1, tag_steps):
+    tag_count = tag_start + tag_step * t
+    compute(tag_count=tag_count)
     total_cases += NUM_TEST_CASES
 
 

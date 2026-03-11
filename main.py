@@ -57,6 +57,14 @@ h = [None] * len(heuristics)
 
 def compute(slot_count=slots_start, budget=budget_start):
     global comp_time
+    global influences_all
+    global raw_influences_all
+    global titles
+    global heuristics
+    global results
+    global h
+    global best_greedy_results
+
     comp_time += f"Slots: {str(slot_count)}, Budget: {budget}\n"
     for test in range(NUM_TEST_CASES):
         data = importlib.import_module("data")
@@ -70,37 +78,37 @@ def compute(slot_count=slots_start, budget=budget_start):
             importlib.reload(h[i])
             comp_time += f"computation time: {str(h[i].end_time - h[i].start_time)} seconds {titles[i]}\n"
 
-    max_greedy_cost = -1
-    max_greedy_approx_ratio = -1
-    max_influence = -1
-    for i in range(1, len(heuristics)):
-        results[heuristics[i]]["agg_approx_cost"] += (
-            h[i].total_cost / h[0].total_cost
-            if not math.isclose(0, h[0].total_cost, rel_tol=1e-6)
-            else 1
-        )
-        results[heuristics[i]]["agg_approx_ratio"] += (
-            h[i].total_influence / h[0].total_influence
-            if not math.isclose(0, h[0].total_influence, rel_tol=1e-6)
-            else 1
-        )
-        if math.isclose(h[0].total_influence, h[i].total_influence, rel_tol=1e-6):
-            results[heuristics[i]]["correct_cnt"] += 1
-        
-        if heuristics[i] == "genetic":
-            continue
-        
-        curr_approx_cost = h[i].total_cost / h[0].total_cost if not math.isclose(0, h[0].total_cost, rel_tol=1e-6) else 1
-        curr_approx_ratio = h[i].total_influence / h[0].total_influence if not math.isclose(0, h[0].total_influence, rel_tol=1e-6) else 1
-        if max(max_greedy_approx_ratio, curr_approx_ratio) == curr_approx_ratio:
-            max_greedy_approx_ratio = curr_approx_ratio
-            max_greedy_cost = curr_approx_cost
-            max_influence = h[i].total_influence
+        max_greedy_cost = -1
+        max_greedy_approx_ratio = -1
+        max_influence = -1
+        for i in range(1, len(heuristics)):
+            results[heuristics[i]]["agg_approx_cost"] += (
+                h[i].total_cost / h[0].total_cost
+                if not math.isclose(0, h[0].total_cost, rel_tol=1e-6)
+                else 1
+            )
+            results[heuristics[i]]["agg_approx_ratio"] += (
+                h[i].total_influence / h[0].total_influence
+                if not math.isclose(0, h[0].total_influence, rel_tol=1e-6)
+                else 1
+            )
+            if math.isclose(h[0].total_influence, h[i].total_influence, rel_tol=1e-6):
+                results[heuristics[i]]["correct_cnt"] += 1
+            
+            if heuristics[i] == "genetic":
+                continue
+            
+            curr_approx_cost = h[i].total_cost / h[0].total_cost if not math.isclose(0, h[0].total_cost, rel_tol=1e-6) else 1
+            curr_approx_ratio = h[i].total_influence / h[0].total_influence if not math.isclose(0, h[0].total_influence, rel_tol=1e-6) else 1
+            if max(max_greedy_approx_ratio, curr_approx_ratio) == curr_approx_ratio:
+                max_greedy_approx_ratio = curr_approx_ratio
+                max_greedy_cost = curr_approx_cost
+                max_influence = h[i].total_influence
 
-    best_greedy_results["agg_approx_cost"] += max_greedy_cost
-    best_greedy_results["agg_approx_ratio"] += max_greedy_approx_ratio
-    if math.isclose(h[0].total_influence, max_influence, rel_tol=1e-6):
-        best_greedy_results["correct_cnt"] += 1
+        best_greedy_results["agg_approx_cost"] += max_greedy_cost
+        best_greedy_results["agg_approx_ratio"] += max_greedy_approx_ratio
+        if math.isclose(h[0].total_influence, max_influence, rel_tol=1e-6):
+            best_greedy_results["correct_cnt"] += 1
 
 
 for b in range(budget_steps):

@@ -2,6 +2,8 @@ import importlib
 import math
 import pandas as pd
 
+log = open("log.txt", "w")
+
 settings = pd.read_csv("settings.csv").to_numpy()[0]
 (
     NUM_TEST_CASES,
@@ -94,12 +96,20 @@ def compute(slot_count=slots_start, budget=budget_start):
             )
             if math.isclose(h[0].total_influence, h[i].total_influence, rel_tol=1e-6):
                 results[heuristics[i]]["correct_cnt"] += 1
-            
+
             if heuristics[i] == "genetic":
                 continue
-            
-            curr_approx_cost = h[i].total_cost / h[0].total_cost if not math.isclose(0, h[0].total_cost, rel_tol=1e-6) else 1
-            curr_approx_ratio = h[i].total_influence / h[0].total_influence if not math.isclose(0, h[0].total_influence, rel_tol=1e-6) else 1
+
+            curr_approx_cost = (
+                h[i].total_cost / h[0].total_cost
+                if not math.isclose(0, h[0].total_cost, rel_tol=1e-6)
+                else 1
+            )
+            curr_approx_ratio = (
+                h[i].total_influence / h[0].total_influence
+                if not math.isclose(0, h[0].total_influence, rel_tol=1e-6)
+                else 1
+            )
             if max(max_greedy_approx_ratio, curr_approx_ratio) == curr_approx_ratio:
                 max_greedy_approx_ratio = curr_approx_ratio
                 max_greedy_cost = curr_approx_cost
@@ -111,33 +121,35 @@ def compute(slot_count=slots_start, budget=budget_start):
             best_greedy_results["correct_cnt"] += 1
 
 
+total_cases = 0
 for b in range(budget_steps):
     budget = budget_start + budget_step * b
     compute(budget=budget)
+    total_cases += NUM_TEST_CASES
 for s in range(1, slots_steps):
     slot_count = slots_start + slots_step * s
     compute(slot_count=slot_count)
+    total_cases += NUM_TEST_CASES
+
 
 for i in range(1, len(h)):
     results[heuristics[i]]["avg_approx_cost"] = (
-        results[heuristics[i]]["agg_approx_cost"] / NUM_TEST_CASES
+        results[heuristics[i]]["agg_approx_cost"] / total_cases
     )
     results[heuristics[i]]["avg_approx_ratio"] = (
-        results[heuristics[i]]["agg_approx_ratio"] / NUM_TEST_CASES
+        results[heuristics[i]]["agg_approx_ratio"] / total_cases
     )
     results[heuristics[i]]["performance"] = (
-        results[heuristics[i]]["correct_cnt"] / NUM_TEST_CASES
+        results[heuristics[i]]["correct_cnt"] / total_cases
     )
 
 best_greedy_results["avg_approx_cost"] = (
-    best_greedy_results["agg_approx_cost"] / NUM_TEST_CASES
+    best_greedy_results["agg_approx_cost"] / total_cases
 )
 best_greedy_results["avg_approx_ratio"] = (
-    best_greedy_results["agg_approx_ratio"] / NUM_TEST_CASES
+    best_greedy_results["agg_approx_ratio"] / total_cases
 )
-best_greedy_results["performance"] = (
-    best_greedy_results["correct_cnt"] / NUM_TEST_CASES
-)
+best_greedy_results["performance"] = best_greedy_results["correct_cnt"] / total_cases
 
 with open("output.txt", "w") as f:
     for i in range(1, len(heuristics)):
@@ -150,14 +162,12 @@ with open("output.txt", "w") as f:
         f.write(
             f"{results[heuristics[i]]['title']} Average Cost Approximation Ratio: {results[heuristics[i]]['avg_approx_cost']:.2f}\n"
         )
-    
+
+    f.write(f"Best Greedy Performance: {best_greedy_results['performance']:.2f}\n")
     f.write(
-        f"Best Greedy Performance: {best_greedy_results["performance"]:.2f}\n"
+        f"Best Greedy Average Approximation Ratio: {best_greedy_results['avg_approx_ratio']:.2f}\n"
     )
     f.write(
-        f"Best Greedy Average Approximation Ratio: {best_greedy_results["avg_approx_ratio"]:.2f}\n"
-    )
-    f.write(
-        f"Best Greedy Average Cost Approximation Ratio: {best_greedy_results["avg_approx_cost"]:.2f}\n"
+        f"Best Greedy Average Cost Approximation Ratio: {best_greedy_results['avg_approx_cost']:.2f}\n"
     )
     f.write(comp_time)

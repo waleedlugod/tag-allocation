@@ -4,51 +4,39 @@ import string
 import pandas as pd
 import csv
 
-BILLBOARD_CNT = 10
-LOCATION_NAME_LEN = 5
-MIN_COST = 10000
-MAX_COST = 100000
-
-MIN_POPULATION_CNT = 100
-MAX_POPULATION_CNT = 100
-MIN_SLOTS_VISITED = 10
-MAX_SLOTS_VISITED = 30
-
-SLOT_CNT = 20
-MAX_INITIAL_SLOT_TIME = 0
-MAX_SLOT_DURATION = 10
-
-MIN_TAG_CNT = 8
-MAX_TAG_CNT = 8
-
-BUDGET = 1000
-
 
 def data(
-    billboard_count=BILLBOARD_CNT,
-    location_name_len=LOCATION_NAME_LEN,
-    min_cost=MIN_COST,
-    max_cost=MAX_COST,
-    min_population_count=MIN_POPULATION_CNT,
-    max_population_count=MAX_POPULATION_CNT,
-    min_slots_visisted=MIN_SLOTS_VISITED,
-    max_slots_visited=MAX_SLOTS_VISITED,
-    slot_count=SLOT_CNT,
-    max_initial_slot_time=MAX_INITIAL_SLOT_TIME,
-    max_slot_duration=MAX_SLOT_DURATION,
-    min_tag_count=MIN_TAG_CNT,
-    max_tag_count=MAX_TAG_CNT,
-    budget=BUDGET,
+    billboard_count=10,
+    location_name_len=5,
+    min_cost=10000,
+    max_cost=100000,
+    min_population_count=100,
+    max_population_count=100,
+    min_slots_visited=10,
+    max_slots_visited=30,
+    slot_count=20,
+    max_initial_slot_time=0,
+    max_slot_duration=10,
+    min_tag_count=20,
+    max_tag_count=20,
+    budget=1000,
 ):
+    if min_cost > budget:
+        min_cost = budget * 0.10
+    if max_cost > budget:
+        max_cost = budget * 0.5
+
+    max_slots_visited = budget
+
     # billboard database
     locations = []
     billboards = []
-    for i in range(BILLBOARD_CNT):
+    for i in range(billboard_count):
         location = "".join(
-            random.choices(string.ascii_uppercase + string.digits, k=LOCATION_NAME_LEN)
+            random.choices(string.ascii_uppercase + string.digits, k=location_name_len)
         )
         locations.append(location)
-        cost = random.randint(MIN_COST, MAX_COST)
+        cost = random.randint(min_cost, max_cost)
         billboards.append([location, cost])
     pd.DataFrame(billboards, columns=["location", "cost"]).rename_axis(
         index="id"
@@ -56,9 +44,9 @@ def data(
 
     # slots database
     slots = []
-    for billboard in range(BILLBOARD_CNT):
-        initial = random.randint(0, MAX_INITIAL_SLOT_TIME)
-        duration = random.randint(1, MAX_SLOT_DURATION)
+    for billboard in range(billboard_count):
+        initial = random.randint(0, max_initial_slot_time)
+        duration = random.randint(1, max_slot_duration)
         for slot in range(math.floor(slot_count)):
             slots.append([billboard, initial, initial + duration])
             initial += duration + 1
@@ -67,11 +55,11 @@ def data(
     ).to_csv("slots.csv")
 
     # population database
-    population_cnt = random.randint(MIN_POPULATION_CNT, MAX_POPULATION_CNT)
+    population_cnt = random.randint(min_population_count, max_population_count)
     population = []
     for i in range(population_cnt):
         rnd_slots = random.choices(
-            slots, k=random.choice([MIN_SLOTS_VISITED, MAX_SLOTS_VISITED])
+            slots, k=random.choice([min_slots_visited, max_slots_visited])
         )
         for slot in rnd_slots:
             location = billboards[slot[0]][0]
@@ -84,7 +72,7 @@ def data(
 
     # influence table
     # 0 if slot timestamp does not agree with user timestamp
-    tag_cnt = random.randint(MIN_TAG_CNT, MAX_TAG_CNT)
+    tag_cnt = random.randint(min_tag_count, max_tag_count)
     influences_table = []
     influences_file = open("influences.txt", "w")
     raw_influences_file = open("raw_influences.txt", "w")

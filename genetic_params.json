@@ -1,0 +1,82 @@
+[
+    {
+        "name": "default",
+        "test?": true,
+        "parent_child_ratio": 0.5,
+        "RWS_percentage": 0.5,
+        "NPC_percentage": 0.5,
+        "mutation_probability": 0.1
+    },
+    {
+        "name": "PCR_D",
+        "test?": true,
+        "parent_child_ratio": 0.2,
+        "RWS_percentage": 0.5,
+        "NPC_percentage": 0.5,
+        "mutation_probability": 0.1
+    },
+    {
+        "name": "PCR_U",
+        "test?": true,
+        "parent_child_ratio": 0.8,
+        "RWS_percentage": 0.5,
+        "NPC_percentage": 0.5,
+        "mutation_probability": 0.1
+    },
+    {
+        "name": "RWS_D",
+        "test?": true,
+        "parent_child_ratio": 0.5,
+        "RWS_percentage": 0.2,
+        "NPC_percentage": 0.5,
+        "mutation_probability": 0.1
+    },
+    {
+        "name": "RWS_U",
+        "test?": true,
+        "parent_child_ratio": 0.5,
+        "RWS_percentage": 0.8,
+        "NPC_percentage": 0.5,
+        "mutation_probability": 0.1
+    },
+    {
+        "name": "NPC_D",
+        "test?": true,
+        "parent_child_ratio": 0.5,
+        "RWS_percentage": 0.5,
+        "NPC_percentage": 0.2,
+        "mutation_probability": 0.1
+    },
+    {
+        "name": "NPC_U",
+        "test?": true,
+        "parent_child_ratio": 0.5,
+        "RWS_percentage": 0.5,
+        "NPC_percentage": 0.8,
+        "mutation_probability": 0.1
+    },
+    {
+        "name": "mutation_D",
+        "test?": true,
+        "parent_child_ratio": 0.5,
+        "RWS_percentage": 0.5,
+        "NPC_percentage": 0.5,
+        "mutation_probability": 0.01
+    },
+    {
+        "name": "mutation_U",
+        "test?": true,
+        "parent_child_ratio": 0.5,
+        "RWS_percentage": 0.5,
+        "NPC_percentage": 0.5,
+        "mutation_probability": 0.5
+    },
+    {
+        "name": "mutation_1",
+        "test?": true,
+        "parent_child_ratio": 0.5,
+        "RWS_percentage": 0.5,
+        "NPC_percentage": 0.5,
+        "mutation_probability": 1
+    }
+]

@@ -102,7 +102,7 @@ if SHOW_METRICS_GRAPHS:
     plt.ylabel("Ratio to Optimal")
     plt.legend(
         ["Performance", "Avg Approximation Ratio", "Avg Cost Approximation Ratio"],
-        loc="lower right",
+        loc="upper left",
     )
     plt.title("Correctness and Approximation Ratios of Greedys")
     plt.savefig("graph_performance.png")
@@ -118,7 +118,7 @@ if SHOW_METRICS_GRAPHS:
     # axes.set_ylim([0, brute_avg_cost])
 
     ### increasing slots
-    plt.figure()
+    plt.figure(figsize=(16, 8))
     x = np.arange(slots_start, slots_start + slots_step * slots_steps, slots_step)
     plt.plot(
         x,
@@ -129,10 +129,10 @@ if SHOW_METRICS_GRAPHS:
         "green",
         x,
         metrics["Greedy (Influence)"]["inc_slots"],
-        "orange",
+        "red",
         x,
         metrics["Greedy (Influence/Cost)"]["inc_slots"],
-        "red",
+        "deeppink",
         x,
         metrics["Greedy (Influence/Cost * Slots)"]["inc_slots"],
         "blue",
@@ -140,7 +140,7 @@ if SHOW_METRICS_GRAPHS:
         metrics["Genetic (100 population, 250 generations, Default Config)"][
             "inc_slots"
         ],
-        "yellow",
+        "gold",
     )
     plt.legend(
         [
@@ -150,14 +150,15 @@ if SHOW_METRICS_GRAPHS:
             "Greedy (Influence/Cost)",
             "Greedy (Influence/Cost * Slots)",
             "Genetic (100 population, 250 generations, Default Config)",
-        ]
+        ],
+        loc="upper left"
     )
     plt.xlabel("Slot count")
     plt.ylabel("Computation time (seconds)")
     plt.savefig("graph_slot.png")
 
     ### increasing budget
-    plt.figure()
+    plt.figure(figsize=(16, 8))
     x = np.arange(budget_start, budget_start + budget_step * budget_steps, budget_step)
     print(len(metrics["DP"]["inc_budget"]))
     plt.plot(
@@ -169,10 +170,10 @@ if SHOW_METRICS_GRAPHS:
         "green",
         x,
         metrics["Greedy (Influence)"]["inc_budget"],
-        "orange",
+        "red",
         x,
         metrics["Greedy (Influence/Cost)"]["inc_budget"],
-        "red",
+        "deeppink",
         x,
         metrics["Greedy (Influence/Cost * Slots)"]["inc_budget"],
         "blue",
@@ -180,7 +181,7 @@ if SHOW_METRICS_GRAPHS:
         metrics["Genetic (100 population, 250 generations, Default Config)"][
             "inc_budget"
         ],
-        "yellow",
+        "gold",
     )
     plt.legend(
         [
@@ -190,7 +191,8 @@ if SHOW_METRICS_GRAPHS:
             "Greedy (Influence/Cost)",
             "Greedy (Influence/Cost * Slots)",
             "Genetic (100 population, 250 generations, Default Config)",
-        ]
+        ],
+        loc="upper left"
     )
     plt.xlabel("Budget")
     plt.ylabel("Computation time (seconds)")
@@ -204,7 +206,7 @@ if SHOW_INFLUENCE_GRAPHS:
     influences = [
         float(_) for _ in influences if "\x00" not in _ and _ != "" and "." in _
     ]
-    plt.figure()
+    plt.figure(figsize=(16, 8))
     plt.hist(influences, rwidth=0.9)
     plt.xlabel("Influence")
     plt.ylabel("Count")

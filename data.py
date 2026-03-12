@@ -8,8 +8,8 @@ import csv
 def data(
     billboard_count=10,
     location_name_len=5,
-    min_cost=10000,
-    max_cost=100000,
+    min_cost=10,
+    max_cost=1000,
     min_population_count=100,
     max_population_count=100,
     min_slots_visited=10,

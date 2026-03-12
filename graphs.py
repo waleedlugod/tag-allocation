@@ -54,6 +54,10 @@ best_greedy_perfromance = float(output.readline().split(" ")[-1])
 best_greedy_approximation_ratio = float(output.readline().split(" ")[-1])
 best_greedy_approximation_cost = float(output.readline().split(" ")[-1])
 
+performances.append(best_greedy_perfromance)
+avg_approx_ratios.append(best_greedy_approximation_ratio)
+avg_costs.append(best_greedy_approximation_cost)
+
 # read computation times
 while True:
     line = output.readline().strip()
@@ -74,22 +78,24 @@ while True:
 
 
 x = np.arange(HEURISTICS_CNT)
+x_performance = np.arange(HEURISTICS_CNT+1)
 width = 0.2
 
 if SHOW_METRICS_GRAPHS:
     ### performance and approximation ratio
     plt.figure(figsize=(16, 8))
-    plt.bar(x - width, performances, width, color="green")
-    plt.bar(x, avg_approx_ratios, width, color="orange")
-    plt.bar(x + width, avg_costs, width, color="red")
+    plt.bar(x_performance - width, performances, width, color="green")
+    plt.bar(x_performance, avg_approx_ratios, width, color="orange")
+    plt.bar(x_performance + width, avg_costs, width, color="red")
     plt.xticks(
-        x,
+        x_performance,
         [
             "Greedy (Influence)",
             "Greedy (Cost)",
             "Greedy (Influence/Cost)",
             "Greedy (Influence/Cost * Slots)",
             "Genetic",
+            "Choose Best Greedy",
         ],
     )
     plt.xlabel("Heuristics")
@@ -99,6 +105,7 @@ if SHOW_METRICS_GRAPHS:
         loc="lower right",
     )
     plt.title("Correctness and Approximation Ratios of Greedys")
+    plt.savefig("graph_performance.png")
 
     ### average costs
     # plt.figure()
@@ -147,6 +154,7 @@ if SHOW_METRICS_GRAPHS:
     )
     plt.xlabel("Slot count")
     plt.ylabel("Computation time (seconds)")
+    plt.savefig("graph_slot.png")
 
     ### increasing budget
     plt.figure()
@@ -186,6 +194,7 @@ if SHOW_METRICS_GRAPHS:
     )
     plt.xlabel("Budget")
     plt.ylabel("Computation time (seconds)")
+    plt.savefig("graph_budget.png")
 
 
 if SHOW_INFLUENCE_GRAPHS:
@@ -210,6 +219,7 @@ if SHOW_INFLUENCE_GRAPHS:
     plt.xlabel("Influence")
     plt.ylabel("Count")
     plt.title("Distribution of Population Influence Values")
+    plt.savefig("graph_influence.png")
 
     # influence distribution (all test cases)
     # note: graph is right skewed as not all users contribute to the final influence value (i.e. 0 value)

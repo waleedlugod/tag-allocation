@@ -201,15 +201,15 @@ if SHOW_INFLUENCE_GRAPHS:
     plt.ylabel("Count")
     plt.title("Distribution of Influence Values From Influence Table")
 
-    # raw_influences = open("raw_influences.txt", "r").read().splitlines()
-    # raw_influences = [
-    #     float(_) for _ in raw_influences if "\x00" not in _ and _ != "" and "." in _
-    # ]
-    # plt.figure()
-    # plt.hist(raw_influences, rwidth=0.9)
-    # plt.xlabel("Influence")
-    # plt.ylabel("Count")
-    # plt.title("Distribution of Population Influence Values")
+    raw_influences = open("raw_influences.txt", "r").read().splitlines()
+    raw_influences = [
+        float(_) for _ in raw_influences if "\x00" not in _ and _ != "" and "." in _
+    ]
+    plt.figure()
+    plt.hist(raw_influences, rwidth=0.9)
+    plt.xlabel("Influence")
+    plt.ylabel("Count")
+    plt.title("Distribution of Population Influence Values")
 
     # influence distribution (all test cases)
     # note: graph is right skewed as not all users contribute to the final influence value (i.e. 0 value)

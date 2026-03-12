@@ -4,9 +4,8 @@ import pandas as pd
 
 output = open("output.txt", "r")
 
-HEURISTICS_CNT = 4
 SHOW_METRICS_GRAPHS = True
-SHOW_INFLUENCE_GRAPHS = True
+SHOW_INFLUENCE_GRAPHS = False
 
 settings = pd.read_csv("settings.csv").to_numpy()[0]
 (
@@ -17,6 +16,9 @@ settings = pd.read_csv("settings.csv").to_numpy()[0]
     budget_start,
     budget_step,
     budget_steps,
+    tag_start,
+    tag_step,
+    tag_steps,
 ) = settings
 performances = []
 avg_approx_ratios = []
@@ -27,9 +29,14 @@ metrics = {
     "Greedy (Influence)": {},
     "Greedy (Cost)": {},
     "Greedy (Influence/Cost)": {},
+    "Greedy (Influence/Cost * Slots)": {},
     "Genetic (100 population, 250 generations, Default Config)": {},
 }
+best_greedy_perfromance = 0
+best_greedy_approximation_ratio = 0
+best_greedy_approximation_cost = 0
 
+HEURISTICS_CNT = len(metrics) - 1
 
 # setup
 for h in metrics:
@@ -43,6 +50,10 @@ for _ in range(HEURISTICS_CNT):
     avg_approx_ratios.append(float(output.readline().split(" ")[-1]))
     avg_costs.append(float(output.readline().split(" ")[-1]))
 
+best_greedy_perfromance = float(output.readline().split(" ")[-1])
+best_greedy_approximation_ratio = float(output.readline().split(" ")[-1])
+best_greedy_approximation_cost = float(output.readline().split(" ")[-1])
+
 # read computation times
 while True:
     line = output.readline().strip()
@@ -51,13 +62,14 @@ while True:
     inputs = line.split(",")
     slots = int(inputs[0].split(" ")[-1])
     budget = int(inputs[1].split(" ")[-1])
+    tags = int(inputs[2].split(" ")[-1])
     for h in range(HEURISTICS_CNT + 1):
         line = output.readline().strip().split(" ")
         comp_time = float(line[2])
         heuristic_title = " ".join(line[4:])
-        if budget == budget_start:
+        if budget == budget_start and tags == tag_start:
             metrics[heuristic_title]["inc_slots"].append(comp_time)
-        if slots == slots_start:
+        if slots == slots_start and tags == tag_start:
             metrics[heuristic_title]["inc_budget"].append(comp_time)
 
 
@@ -66,13 +78,19 @@ width = 0.2
 
 if SHOW_METRICS_GRAPHS:
     ### performance and approximation ratio
-    plt.figure(figsize=(8, 8))
+    plt.figure(figsize=(16, 8))
     plt.bar(x - width, performances, width, color="green")
     plt.bar(x, avg_approx_ratios, width, color="orange")
     plt.bar(x + width, avg_costs, width, color="red")
     plt.xticks(
         x,
-        ["Greedy (Influence)", "Greedy (Cost)", "Greedy (Influence/Cost)", "Genetic"],
+        [
+            "Greedy (Influence)",
+            "Greedy (Cost)",
+            "Greedy (Influence/Cost)",
+            "Greedy (Influence/Cost * Slots)",
+            "Genetic",
+        ],
     )
     plt.xlabel("Heuristics")
     plt.ylabel("Ratio to Optimal")
@@ -94,21 +112,24 @@ if SHOW_METRICS_GRAPHS:
 
     ### increasing slots
     plt.figure()
-    y = np.arange(slots_start, slots_start + slots_step * slots_steps, slots_step)
+    x = np.arange(slots_start, slots_start + slots_step * slots_steps, slots_step)
     plt.plot(
-        y,
+        x,
         metrics["DP"]["inc_slots"],
         "purple",
-        y,
+        x,
         metrics["Greedy (Cost)"]["inc_slots"],
         "green",
-        y,
+        x,
         metrics["Greedy (Influence)"]["inc_slots"],
         "orange",
-        y,
+        x,
         metrics["Greedy (Influence/Cost)"]["inc_slots"],
         "red",
-        y,
+        x,
+        metrics["Greedy (Influence/Cost * Slots)"]["inc_slots"],
+        "blue",
+        x,
         metrics["Genetic (100 population, 250 generations, Default Config)"][
             "inc_slots"
         ],
@@ -120,6 +141,7 @@ if SHOW_METRICS_GRAPHS:
             "Greedy (Cost)",
             "Greedy (Influence)",
             "Greedy (Influence/Cost)",
+            "Greedy (Influence/Cost * Slots)",
             "Genetic (100 population, 250 generations, Default Config)",
         ]
     )
@@ -128,21 +150,25 @@ if SHOW_METRICS_GRAPHS:
 
     ### increasing budget
     plt.figure()
-    y = np.arange(budget_start, budget_start + budget_step * budget_steps, budget_step)
+    x = np.arange(budget_start, budget_start + budget_step * budget_steps, budget_step)
+    print(len(metrics["DP"]["inc_budget"]))
     plt.plot(
-        y,
+        x,
         metrics["DP"]["inc_budget"],
         "purple",
-        y,
+        x,
         metrics["Greedy (Cost)"]["inc_budget"],
         "green",
-        y,
+        x,
         metrics["Greedy (Influence)"]["inc_budget"],
         "orange",
-        y,
+        x,
         metrics["Greedy (Influence/Cost)"]["inc_budget"],
         "red",
-        y,
+        x,
+        metrics["Greedy (Influence/Cost * Slots)"]["inc_budget"],
+        "blue",
+        x,
         metrics["Genetic (100 population, 250 generations, Default Config)"][
             "inc_budget"
         ],
@@ -154,6 +180,7 @@ if SHOW_METRICS_GRAPHS:
             "Greedy (Cost)",
             "Greedy (Influence)",
             "Greedy (Influence/Cost)",
+            "Greedy (Influence/Cost * Slots)",
             "Genetic (100 population, 250 generations, Default Config)",
         ]
     )

@@ -35,7 +35,7 @@ def data(
             random.choices(string.ascii_uppercase + string.digits, k=location_name_len)
         )
         locations.append(location)
-        cost = random.randint(min_cost, max_cost)
+        cost = random.randint(int(min_cost), int(max_cost))
         billboards.append([location, cost])
     pd.DataFrame(billboards, columns=["location", "cost"]).rename_axis(
         index="id"

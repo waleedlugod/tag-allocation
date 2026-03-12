@@ -127,14 +127,17 @@ def compute(slot_count=slots_start, budget=budget_start, tag_count=tag_start):
 total_cases = 0
 for b in range(budget_steps):
     budget = budget_start + budget_step * b
+    print(f"test case: {total_cases}")
     compute(budget=budget)
     total_cases += NUM_TEST_CASES
 for s in range(1, slots_steps):
     slot_count = slots_start + slots_step * s
+    print(f"test case: {total_cases}")
     compute(slot_count=slot_count)
     total_cases += NUM_TEST_CASES
 for t in range(1, tag_steps):
     tag_count = tag_start + tag_step * t
+    print(f"test case: {total_cases}")
     compute(tag_count=tag_count)
     total_cases += NUM_TEST_CASES
 

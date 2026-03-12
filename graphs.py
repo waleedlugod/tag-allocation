@@ -211,6 +211,7 @@ if SHOW_INFLUENCE_GRAPHS:
     plt.xlabel("Influence")
     plt.ylabel("Count")
     plt.title("Distribution of Influence Values From Influence Table")
+    plt.savefig("graph_table_influence.png")
 
     raw_influences = open("raw_influences.txt", "r").read().splitlines()
     raw_influences = [
@@ -221,7 +222,7 @@ if SHOW_INFLUENCE_GRAPHS:
     plt.xlabel("Influence")
     plt.ylabel("Count")
     plt.title("Distribution of Population Influence Values")
-    plt.savefig("graph_influence.png")
+    plt.savefig("graph_population_influence.png")
 
     # influence distribution (all test cases)
     # note: graph is right skewed as not all users contribute to the final influence value (i.e. 0 value)

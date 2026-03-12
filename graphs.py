@@ -83,10 +83,14 @@ width = 0.2
 
 if SHOW_METRICS_GRAPHS:
     ### performance and approximation ratio
-    plt.figure(figsize=(16, 8))
-    plt.bar(x_performance - width, performances, width, color="green")
-    plt.bar(x_performance, avg_approx_ratios, width, color="orange")
-    plt.bar(x_performance + width, avg_costs, width, color="red")
+    plt.figure(figsize=(20, 8))
+    ax = plt.gca()
+    bars1 = ax.bar(x_performance - width, performances, width, color="green")
+    bars2 = ax.bar(x_performance, avg_approx_ratios, width, color="orange")
+    bars3 = ax.bar(x_performance + width, avg_costs, width, color="red")
+    ax.bar_label(bars1, fmt="%.2f", padding=3, fontsize=8)
+    ax.bar_label(bars2, fmt="%.2f", padding=3, fontsize=8)
+    ax.bar_label(bars3, fmt="%.2f", padding=3, fontsize=8)
     plt.xticks(
         x_performance,
         [

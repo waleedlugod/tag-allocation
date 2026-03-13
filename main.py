@@ -104,8 +104,8 @@ def compute(slot_count=slots_start, budget=budget_start, tag_count=tag_start):
                 continue
 
             curr_approx_cost = (
-                h[i].total_cost / h[0].total_cost
-                if not math.isclose(0, h[0].total_cost, rel_tol=1e-6)
+                h[0].total_cost / h[i].total_cost
+                if not math.isclose(0, h[i].total_cost, rel_tol=1e-6)
                 else 1
             )
             curr_approx_ratio = (
